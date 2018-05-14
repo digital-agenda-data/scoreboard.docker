@@ -1,0 +1,44 @@
+version: "2"
+services:
+
+  memcached:
+    image: memcached:1.5.7-alpine
+    environment:
+      TZ: "Europe/Bucharest"
+    command:
+    - -m
+    - "2048"
+
+  plone:
+    build: plone
+    depends_on:
+      - zeo
+    volumes:
+      - ./src:/src
+    environment:
+      ZEO_ADDRESS: "zeo:8080"
+      MEMCACHE_SERVER: "memcached:11211"
+      SOLR_URL: "http://solr:8983/solr/scoreboard"
+
+  haproxy:
+    image: eeacms/haproxy:1.7-4.0
+    depends_on:
+      - plone
+    ports:
+      - "8440:5000"
+    environment:
+      BACKENDS: "plone"
+      BACKENDS_PORT: "8080"
+      DNS_ENABLED: "True"
+      TZ: "Europe/Bucharest"
+
+  zeo:
+    image: plone/plone:4.3.17
+    command:
+      - zeo
+    volumes:
+      - zeodata:/data
+
+
+volumes:
+  zeodata:
