@@ -11,10 +11,6 @@ services:
 
   plone:
     build: plone
-    depends_on:
-      - zeo
-    volumes:
-      - ./src:/src
     environment:
       ZEO_ADDRESS: "zeo:8080"
       MEMCACHE_SERVER: "memcached:11211"
@@ -22,8 +18,6 @@ services:
 
   haproxy:
     image: eeacms/haproxy:1.7-4.0
-    depends_on:
-      - plone
     ports:
       - "8440:5000"
     environment:

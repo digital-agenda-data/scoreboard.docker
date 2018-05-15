@@ -1,0 +1,6 @@
+version: "2"
+services:
+  plone:
+    build: plone
+    volumes:
+      - ./src:/plone/instance/src
