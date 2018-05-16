@@ -14,6 +14,7 @@ services:
     links:
     - zeoserver
     - memcached
+    - solr
     environment:
       ZEO_ADDRESS: "zeo:8080"
       MEMCACHE_SERVER: "memcached:11211"
@@ -35,6 +36,19 @@ services:
       - zeo
     volumes:
       - zeodata:/data
+
+  solr:
+    image: solr:6.6.3-slim
+    volumes: 
+      - solrdata:/opt/solr/server/solr/mycores
+      - ./solr:/core-template:ro
+    entrypoint:
+      - docker-entrypoint.sh
+      - solr-precreate
+      - scoreboard
+      - ${SOLR_SCOREBOARD_LOCATION}
+    
+
 
   virtuoso:
      image: openlink/virtuoso_opensource:v07.20.3217
@@ -83,8 +97,11 @@ services:
        MYSQL_ROOT_PASSWORD: ${MARIADB_PASSWORD}
 
 
+
+
 volumes:
   maria_db:
   virtuoso_db:
   content_registry:
   zeodata:
+  solrdata:
