@@ -86,7 +86,7 @@ services:
        MYSQL_USER: piwik
        MYSQL_PASSWORD: ${MARIADB_PIWIK_PASSWORD}
 
-  matomo:
+  piwik:
     image: matomo:3.5.0-fpm
     links:
     - mariadb:db
@@ -98,7 +98,11 @@ services:
   nginx:
     image: nginx:1.13
     depends_on:
-    - matomo
+    - piwik
+    ports:
+    - 80:80
+    volumes_from:
+    - piwik
     volumes:
     - ./nginx/globals.conf:/etc/nginx/conf.d/globals.conf:ro
     - ./nginx/project.conf:/etc/nginx/conf.d/project.conf:ro
