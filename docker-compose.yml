@@ -86,18 +86,28 @@ services:
        MYSQL_USER: piwik
        MYSQL_PASSWORD: ${MARIADB_PIWIK_PASSWORD}
 
-  piwik:
-    image: matomo:3.5.0-apache
+  matomo:
+    image: matomo:3.5.0-fpm
     links:
     - mariadb:db
-    ports:
-      - 9000:80
     environment:
        TZ: "${TZ}"
        MYSQL_ROOT_PASSWORD: ${MARIADB_PASSWORD}
 
 
-
+  nginx:
+    image: nginx:1.13
+    depends_on:
+    - matomo
+    volumes:
+    - ./nginx/globals.conf:/etc/nginx/conf.d/globals.conf:ro
+    - ./nginx/project.conf:/etc/nginx/conf.d/project.conf:ro
+    
+  elda:
+    image: elda
+    ports:
+      - 8082:8080
+      - 8445:8443
 
 volumes:
   maria_db:
