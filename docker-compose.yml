@@ -113,9 +113,28 @@ services:
       - 8082:8080
       - 8445:8443
 
+  cron:
+    image: cron
+    volumes_from:
+    - plone
+    volumes:
+    - ./cron/cron_jobs_test.txt:/var/crontab.txt
+    - ./cron/scripts/:/var/cron/scripts
+    - codelists:/var/local/rdf/codelists
+    environment:
+    - CRONTAB_SPARQL_ENDPOINT=http://sparql:8890/sparql
+    - CRONTAB_ISQL_HOST=virtuoso
+    - CRONTAB_ISQL_PORT=1111
+    - CRONTAB_ISQL_USER=dba
+    - CRONTAB_ISQL_PASSWORD=${VIRTUOSO_DBA_PASSWORD}
+    - CRONTAB_CONTREG_URL=http://test.digital-agenda-data.eu
+    - CRONTAB_SOLR_URL=http://solr:8983/
+
+
 volumes:
   maria_db:
   virtuoso_db:
   content_registry:
   zeodata:
   solrdata:
+  codelists:
