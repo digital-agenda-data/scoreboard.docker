@@ -1,3 +1,0 @@
-30 23 * * * /var/cron/scripts/plone/export/export_datasets_prod.sh | logger
-0 23 * * * python /var/cron/scripts/solr-index/solr-index.py --core scoreboardtest --base-path $CONTREG_URL --solr $SOLR_URL | logger
-

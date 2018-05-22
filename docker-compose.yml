@@ -42,6 +42,8 @@ services:
     volumes: 
       - solrdata:/opt/solr/server/solr/mycores
       - ./solr:/core-template:ro
+    ports:
+      - 8983:8983
     entrypoint:
       - docker-entrypoint.sh
       - solr-precreate
@@ -52,6 +54,8 @@ services:
 
   virtuoso:
      image: openlink/virtuoso_opensource:v07.20.3217
+     volumes_from:
+     - plone
      volumes:
        - ./virtuoso:/opt/virtuoso-opensource/database
        - virtuoso_db:/data
@@ -115,21 +119,25 @@ services:
 
   cron:
     image: cron
+    hostname: crontab
     volumes_from:
-    - plone
+     - plone
+    links:
+    - virtuoso
     volumes:
-    - ./cron/cron_jobs_test.txt:/var/crontab.txt
+    - ./cron/cron_jobs.txt:/var/crontab.txt
     - ./cron/scripts/:/var/cron/scripts
-    - codelists:/var/local/rdf/codelists
+    - ./cron/ssh:/root/.ssh
+    - codelists:/var/local/rdf
     environment:
-    - CRONTAB_SPARQL_ENDPOINT=http://sparql:8890/sparql
+    - CRONTAB_SPARQL_ENDPOINT=http://virtuoso:8890/sparql
     - CRONTAB_ISQL_HOST=virtuoso
     - CRONTAB_ISQL_PORT=1111
     - CRONTAB_ISQL_USER=dba
     - CRONTAB_ISQL_PASSWORD=${VIRTUOSO_DBA_PASSWORD}
     - CRONTAB_CONTREG_URL=http://test.digital-agenda-data.eu
-    - CRONTAB_SOLR_URL=http://solr:8983/
-
+    - CRONTAB_SOLR_URL=http://solr:8983/solr
+    - RUN_RDF_EXPORT=no
 
 volumes:
   maria_db:

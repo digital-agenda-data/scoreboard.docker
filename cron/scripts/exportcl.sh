@@ -1,6 +1,17 @@
 #!/bin/bash
 
-cd 
+GIT=git@github.com:digital-agenda-data/rdf.git
+
+if [ -z "$RUN_RDF_EXPORT" ] || [[ ! "$RUN_RDF_EXPORT" == "yes" ]] ; then 
+  exit 0
+fi
+
+if [ ! -d /var/local/rdf/codelists ]; then
+  git clone $GIT /var/local/rdf
+fi
+  
+cd /var/local/rdf/codelists
+  
 DIMENSIONS="indicator indicator-group breakdown breakdown-group source unit-measure"
 for dimension in ${DIMENSIONS}
 do

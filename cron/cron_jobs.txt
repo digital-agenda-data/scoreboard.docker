@@ -1,0 +1,3 @@
+30 23 * * * cd /var/cron/scripts/;/var/cron/scripts/export_datasets.sh 1>/proc/1/fd/1 2>/proc/1/fd/2
+0 23 * * * python /var/cron/scripts/solr-index.py --core scoreboard --base-path  --solr  1>/proc/1/fd/1 2>/proc/1/fd/2
+10 23 * * * /var/cron/scripts/exportcl.sh 1>/proc/1/fd/1 2>/proc/1/fd/2

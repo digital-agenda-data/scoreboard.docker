@@ -64,7 +64,7 @@ sparql_params = urllib.urlencode({
     'timeout': 0
 })
 result = urllib2.urlopen(SPARQL_ENDPOINT, data=sparql_params)
-print 'Reading datasets from ' + SPARQL_ENDPOINT
+print('Reading datasets from ' + SPARQL_ENDPOINT)
 reader = csv.reader(StringIO.StringIO(result.read()), delimiter=',')
 reader.next()
 for row in reader:
@@ -78,8 +78,8 @@ for row in reader:
         with open('isql.script', 'w') as f:
             f.write("dump_one_graph('{0}', '{1}/{2}', 5000000000);".format(row[2], OUTPUT_DIR, dataset))
 
-        print 'Exporting ttl for %s' % dataset
-        call(["/usr/bin/isql-vt", ISQL_HOST":"ISQL_PORT, ISQL_USER, ISQL_PASSWORD, "isql.script"])
+        print('Exporting ttl for %s' % dataset)
+        call(["/usr/bin/isql-vt", ISQL_HOST+":"+ISQL_PORT, ISQL_USER, ISQL_PASSWORD, "isql.script"])
         #call(["isql", ISQL_PORT, ISQL_USER, ISQL_PASSWORD, "isql.script"])
         #print 'Zipping %s.ttl' % dataset
         #zf = zipfile.ZipFile(OUTPUT_DIR +'/' + "%s.ttl.zip" % (dataset), "w", zipfile.ZIP_DEFLATED)
@@ -94,7 +94,8 @@ for row in reader:
             'format': 'text/csv',
             'timeout': 0
         })
-        print 'Exporting csv for %s' % dataset
+        print('Exporting csv for %s' % dataset)
+        print(' %s  %s ' % (SPARQL_ENDPOINT,sparql_csv_params) )
         dataset_csv = urllib2.urlopen(SPARQL_ENDPOINT, data=sparql_csv_params)
         csv_filename = OUTPUT_DIR +'/' + dataset + '.csv'
         with open(csv_filename, 'wb') as csvfile:
@@ -102,21 +103,21 @@ for row in reader:
                 chunk = dataset_csv.read(64*1024)
                 if not chunk: break
                 csvfile.write(chunk)
-        print 'Zipping %s' % csv_filename
+        print('Zipping %s' % csv_filename)
         zf = zipfile.ZipFile(csv_filename + ".zip", "w", zipfile.ZIP_DEFLATED)
         files = glob.glob(csv_filename)
         for filename in files:
             zf.write(filename, os.path.split(filename)[-1])
         zf.close()
         # generate TSV from CSV
-        print 'Exporting tsv for %s' % dataset
+        print('Exporting tsv for %s' % dataset)
         tsv_filename = OUTPUT_DIR +'/' + dataset + '.tsv'
         with open(csv_filename, 'r') as csvfile:
             csv_reader = csv.reader(csvfile, delimiter=',')
             with open(tsv_filename, 'wb') as tsvfile:
                 for row in csv_reader:
                     tsvfile.write("\t".join(row) + "\n")
-        print 'Zipping %s' % tsv_filename
+        print('Zipping %s' % tsv_filename)
         zf = zipfile.ZipFile(tsv_filename + ".zip", "w", zipfile.ZIP_DEFLATED)
         files = glob.glob(tsv_filename)
         for filename in files:
