@@ -126,7 +126,7 @@ services:
     - virtuoso
     volumes:
     - ./cron/cron_jobs.txt:/var/crontab.txt
-    - ./cron/scripts/:/var/cron/scripts
+    - ./cron/scripts:/var/cron/scripts
     - ./cron/ssh:/root/.ssh
     - codelists:/var/local/rdf
     environment:
