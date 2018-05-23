@@ -75,6 +75,8 @@ services:
      image: contreg
      networks:
      - scoreboard
+     ports:
+     - 8383:8080
      volumes:
        - content_registry:/var/local/cr/apphome
      environment:

@@ -21,6 +21,8 @@ docker-compose exec virtuoso  sh -c "/opt/virtuoso-opensource/bin/isql 1111 dba 
 
 docker-compose exec  content_registry sh -c "cd /var/local/cr/build; mvn liquibase:update"
 
+docker-compose exec  content_registry sh -c "rm -rf $CATALINA_HOME/webapps/data; cp -pr $CR_BASE/build/target/cr-das $CATALINA_HOME/webapps/data" 
+
 
 docker-compose exec virtuoso sh -c "/opt/virtuoso-opensource/bin/isql 1111 dba dba /opt/virtuoso-opensource/database/initial-data-after-schema-created.sql"
 

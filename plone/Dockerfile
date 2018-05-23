@@ -17,5 +17,3 @@ RUN apt-get purge -y --auto-remove gcc libffi-dev libc6-dev \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /plone/buildout-cache/downloads/*
 
-VOLUME /var/www/html/download
-

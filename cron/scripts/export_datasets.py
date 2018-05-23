@@ -95,7 +95,6 @@ for row in reader:
             'timeout': 0
         })
         print('Exporting csv for %s' % dataset)
-        print(' %s  %s ' % (SPARQL_ENDPOINT,sparql_csv_params) )
         dataset_csv = urllib2.urlopen(SPARQL_ENDPOINT, data=sparql_csv_params)
         csv_filename = OUTPUT_DIR +'/' + dataset + '.csv'
         with open(csv_filename, 'wb') as csvfile:
