@@ -5,25 +5,29 @@ services:
     image: memcached:1.5.7-alpine
     environment:
       TZ: "Europe/Bucharest"
+    networks:
+    - scoreboard
     command:
     - -m
     - "2048"
 
   plone:
-    build: plone
-    links:
-    - zeoserver
-    - memcached
-    - solr
+    image: plone
+    networks:
+    - scoreboard
+    ports:
+    - 8181:8080
     environment:
-      ZEO_ADDRESS: "zeo:8080"
+      ZEO_ADDRESS: "zeoserver:8080"
       MEMCACHE_SERVER: "memcached:11211"
       SOLR_URL: "http://solr:8983/solr/scoreboard"
 
   haproxy:
     image: eeacms/haproxy:1.7-4.0
+    networks:
+    - scoreboard
     ports:
-      - "8440:5000"
+    - 8182:5000
     environment:
       BACKENDS: "plone"
       BACKENDS_PORT: "8080"
@@ -32,6 +36,8 @@ services:
 
   zeoserver:
     image: plone/plone:4.3.17
+    networks:
+    - scoreboard
     command:
       - zeo
     volumes:
@@ -39,6 +45,8 @@ services:
 
   solr:
     image: solr:6.6.3-slim
+    networks:
+    - scoreboard
     volumes: 
       - solrdata:/opt/solr/server/solr/mycores
       - ./solr:/core-template:ro
@@ -54,20 +62,21 @@ services:
 
   virtuoso:
      image: openlink/virtuoso_opensource:v07.20.3217
-     volumes_from:
-     - plone
+     networks:
+     - scoreboard
      volumes:
        - ./virtuoso:/opt/virtuoso-opensource/database
        - virtuoso_db:/data
+       - exported_datasets:/var/www/html/download
      ports:
        - 8890:8890
 
   content_registry:
      image: contreg
+     networks:
+     - scoreboard
      volumes:
        - content_registry:/var/local/cr/apphome
-     links:
-       - virtuoso
      environment:
        TZ: "${TZ}"
        HOME_URL: http://test-cr.digital-agenda-data.eu
@@ -83,6 +92,8 @@ services:
     volumes:
       - maria_db:/var/lib/mysql
     restart: always
+    networks:
+    - scoreboard
     environment:
        TZ: "${TZ}"
        MYSQL_ROOT_PASSWORD: ${MARIADB_PASSWORD}
@@ -92,8 +103,12 @@ services:
 
   piwik:
     image: matomo:3.5.0-fpm
+    networks:
+    - scoreboard
     links:
     - mariadb:db
+    volumes:
+    - piwik_files:/var/www/html/
     environment:
        TZ: "${TZ}"
        MYSQL_ROOT_PASSWORD: ${MARIADB_PASSWORD}
@@ -101,18 +116,20 @@ services:
 
   nginx:
     image: nginx:1.13
-    depends_on:
-    - piwik
+    networks:
+    - scoreboard
     ports:
     - 80:80
-    volumes_from:
-    - piwik
     volumes:
     - ./nginx/globals.conf:/etc/nginx/conf.d/globals.conf:ro
     - ./nginx/project.conf:/etc/nginx/conf.d/project.conf:ro
-    
+    - piwik_files:/var/www/html/ 
+    - exported_datasets:/export/download
+  
   elda:
     image: elda
+    networks:
+    - scoreboard
     ports:
       - 8082:8080
       - 8445:8443
@@ -120,15 +137,14 @@ services:
   cron:
     image: cron
     hostname: crontab
-    volumes_from:
-     - plone
-    links:
-    - virtuoso
+    networks:
+    - scoreboard
     volumes:
     - ./cron/cron_jobs.txt:/var/crontab.txt
     - ./cron/scripts:/var/cron/scripts
     - ./cron/ssh:/root/.ssh
     - codelists:/var/local/rdf
+    - exported_datasets:/var/www/html/download
     environment:
     - CRONTAB_SPARQL_ENDPOINT=http://virtuoso:8890/sparql
     - CRONTAB_ISQL_HOST=virtuoso
@@ -146,3 +162,10 @@ volumes:
   zeodata:
   solrdata:
   codelists:
+  exported_datasets:
+  piwik_files:
+  plone_data:
+
+
+networks:
+  scoreboard:
