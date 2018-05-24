@@ -17,6 +17,8 @@ COPY elda-scoreboard.ttl $ELDA_HOME/webapps/elda/specs/scoreboard.ttl
 
 COPY docker-entrypoint.sh /
 
+EXPOSE 8080
+
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["java", "-jar", "start.jar"]
 

@@ -3,20 +3,19 @@ services:
 
   memcached:
     image: memcached:1.5.7-alpine
+    restart: always
     environment:
-      TZ: "Europe/Bucharest"
-    networks:
-    - scoreboard
+      TZ: "${TZ}"
     command:
     - -m
     - "2048"
 
   plone:
-    image: plone
-    networks:
-    - scoreboard
-    ports:
-    - 8181:8080
+    image: digitalagendadata/scoreboard.plone
+    restart: always
+    depends_on:
+    - zeoserver
+    - memcached
     environment:
       ZEO_ADDRESS: "zeoserver:8080"
       MEMCACHE_SERVER: "memcached:11211"
@@ -24,20 +23,18 @@ services:
 
   haproxy:
     image: eeacms/haproxy:1.7-4.0
-    networks:
-    - scoreboard
-    ports:
-    - 8182:5000
+    restart: always
+    depends_on:
+    - plone
     environment:
       BACKENDS: "plone"
       BACKENDS_PORT: "8080"
       DNS_ENABLED: "True"
-      TZ: "Europe/Bucharest"
+      TZ: "${TZ}"
 
   zeoserver:
     image: plone/plone:4.3.17
-    networks:
-    - scoreboard
+    restart: always
     command:
       - zeo
     volumes:
@@ -45,43 +42,36 @@ services:
 
   solr:
     image: solr:6.6.3-slim
-    networks:
-    - scoreboard
+    restart: always
     volumes: 
       - solrdata:/opt/solr/server/solr/mycores
       - ./solr:/core-template:ro
-    ports:
-      - 8983:8983
     entrypoint:
       - docker-entrypoint.sh
       - solr-precreate
-      - scoreboard
+      - scoreboard 
       - ${SOLR_SCOREBOARD_LOCATION}
     
 
 
   virtuoso:
      image: openlink/virtuoso_opensource:v07.20.3217
-     networks:
-     - scoreboard
+     restart: always     
      volumes:
        - ./virtuoso:/opt/virtuoso-opensource/database
        - virtuoso_db:/data
        - exported_datasets:/var/www/html/download
-     ports:
-       - 8890:8890
 
   content_registry:
-     image: contreg
-     networks:
-     - scoreboard
-     ports:
-     - 8383:8080
+     image: digitalagendadata/scoreboard.contreg
+     restart: always
+     depends_on:
+     - virtuoso
      volumes:
        - content_registry:/var/local/cr/apphome
      environment:
        TZ: "${TZ}"
-       HOME_URL: http://test-cr.digital-agenda-data.eu
+       HOME_URL: "${SCOREBOARD_URL}/data"
        DB_HOST: virtuoso
        DB_PORT: 1111
        DB_USER: cr3user
@@ -94,8 +84,6 @@ services:
     volumes:
       - maria_db:/var/lib/mysql
     restart: always
-    networks:
-    - scoreboard
     environment:
        TZ: "${TZ}"
        MYSQL_ROOT_PASSWORD: ${MARIADB_PASSWORD}
@@ -105,8 +93,7 @@ services:
 
   piwik:
     image: matomo:3.5.0-fpm
-    networks:
-    - scoreboard
+    restart: always
     links:
     - mariadb:db
     volumes:
@@ -118,8 +105,11 @@ services:
 
   nginx:
     image: nginx:1.13
-    networks:
-    - scoreboard
+    depends_on:
+    - haproxy
+    - piwik
+    - solr
+    restart: always
     ports:
     - 80:80
     volumes:
@@ -127,20 +117,23 @@ services:
     - ./nginx/project.conf:/etc/nginx/conf.d/project.conf:ro
     - piwik_files:/var/www/html/ 
     - exported_datasets:/export/download
-  
-  elda:
-    image: elda
-    networks:
-    - scoreboard
-    ports:
-      - 8082:8080
-      - 8445:8443
+    environment:
+    - TZ=${TZ}
 
+
+  elda:
+    image: digitalagendadata/scoreboard.elda
+    restart: always
+    links:
+    - nginx:${ELDA_BASE_URL}
+    environment:
+    - TZ=${TZ}
+    - ELDA_BASE_URL=${ELDA_BASE_URL}
+ 
   cron:
-    image: cron
+    image: digitalagendadata/scoreboard.cron
+    restart: always
     hostname: crontab
-    networks:
-    - scoreboard
     volumes:
     - ./cron/cron_jobs.txt:/var/crontab.txt
     - ./cron/scripts:/var/cron/scripts
@@ -153,7 +146,7 @@ services:
     - CRONTAB_ISQL_PORT=1111
     - CRONTAB_ISQL_USER=dba
     - CRONTAB_ISQL_PASSWORD=${VIRTUOSO_DBA_PASSWORD}
-    - CRONTAB_CONTREG_URL=http://test.digital-agenda-data.eu
+    - CRONTAB_CONTREG_URL=${SCOREBOARD_URL}
     - CRONTAB_SOLR_URL=http://solr:8983/solr
     - RUN_RDF_EXPORT=no
 
@@ -168,6 +161,3 @@ volumes:
   piwik_files:
   plone_data:
 
-
-networks:
-  scoreboard:

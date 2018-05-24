@@ -25,7 +25,7 @@
 @prefix elda:               <http://www.epimorphics.com/vocabularies/lda#> .
 
 # Prefix for example-local entities.
-@prefix spec:				<http://localhost:8082/> . #elda/vocabulary/>.
+@prefix spec:				<http://localhost:8080/> . #elda/vocabulary/>.
 
 @prefix hig:				<http://www.hans-im-glueck.de/> .
 
@@ -368,7 +368,7 @@ spec:viewerDistribution a api:Viewer
 spec:scoreboard-api a api:API
 	; rdfs:label "Scoreboard API -- "@en
   #The SPARQL endpoint
-	; api:sparqlEndpoint <http://digital-agenda-data.eu/sparql>
+	; api:sparqlEndpoint <http://ELDA_BASE_URL/sparql>
   #<http://virtuoso.scoreboardtest.edw.ro/sparql>
  	; api:maxPageSize 50
   ; api:defaultPageSize 10
@@ -414,7 +414,7 @@ spec:scoreboard-api a api:API
         , [api:name "webapp"; api:value "/elda"]
 	.
 
-<http://digital-agenda-data.eu/sparql> elda:supportsNestedSelect true.
+<http://ELDA_BASE_URL/sparql> elda:supportsNestedSelect true.
 #Endpoint definition
 #List all datasets
 
