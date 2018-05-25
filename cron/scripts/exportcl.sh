@@ -2,7 +2,9 @@
 
 GIT=git@github.com:digital-agenda-data/rdf.git
 
-if [ -z "$RUN_RDF_EXPORT" ] || [[ ! "$RUN_RDF_EXPORT" == "yes" ]] ; then 
+source /etc/environment
+
+if [ -z "$DEPLOY_TYPE" ] || [[ ! "$DEPLOY_TYPE" == "PROD" ]] ; then 
   exit 0
 fi
 

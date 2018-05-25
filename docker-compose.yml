@@ -50,9 +50,8 @@ services:
       - docker-entrypoint.sh
       - solr-precreate
       - scoreboard 
-      - ${SOLR_SCOREBOARD_LOCATION}
+      - /core-template/scoreboard-${DEPLOY_TYPE}
     
-
 
   virtuoso:
      image: openlink/virtuoso_opensource:v07.20.3217
@@ -114,7 +113,7 @@ services:
     - 80:80
     volumes:
     - ./nginx/globals.conf:/etc/nginx/conf.d/globals.conf:ro
-    - ./nginx/project.conf:/etc/nginx/conf.d/project.conf:ro
+    - ./nginx/project-${DEPLOY_TYPE}.conf:/etc/nginx/conf.d/project.conf:ro
     - piwik_files:/var/www/html/ 
     - exported_datasets:/export/download
     environment:
@@ -125,10 +124,10 @@ services:
     image: digitalagendadata/scoreboard.elda
     restart: always
     links:
-    - nginx:${ELDA_BASE_URL}
+    - nginx:${SCOREBOARDBASE_URL}
     environment:
     - TZ=${TZ}
-    - ELDA_BASE_URL=${ELDA_BASE_URL}
+    - ELDA_BASE_URL=${SCOREBOARDBASE_URL}
  
   cron:
     image: digitalagendadata/scoreboard.cron
@@ -148,7 +147,7 @@ services:
     - CRONTAB_ISQL_PASSWORD=${VIRTUOSO_DBA_PASSWORD}
     - CRONTAB_CONTREG_URL=${SCOREBOARD_URL}
     - CRONTAB_SOLR_URL=http://solr:8983/solr
-    - RUN_RDF_EXPORT=no
+    - CRONTAB_DEPLOY_TYPE=${DEPLOY_TYPE}
 
 volumes:
   maria_db:
