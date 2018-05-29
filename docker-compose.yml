@@ -22,7 +22,7 @@ services:
       SOLR_URL: "http://solr:8983/solr/scoreboard"
 
   haproxy:
-    image: eeacms/haproxy:1.7-4.0
+    image: eeacms/haproxy:1.8-1.1
     restart: always
     depends_on:
     - plone
@@ -110,7 +110,7 @@ services:
     - solr
     restart: always
     ports:
-    - 80:80
+    - 81:80
     volumes:
     - ./nginx/globals.conf:/etc/nginx/conf.d/globals.conf:ro
     - ./nginx/project-${DEPLOY_TYPE}.conf:/etc/nginx/conf.d/project.conf:ro
@@ -124,10 +124,10 @@ services:
     image: digitalagendadata/scoreboard.elda
     restart: always
     links:
-    - nginx:${SCOREBOARDBASE_URL}
+    - "nginx:${SCOREBOARDBASE_URL}"
     environment:
     - TZ=${TZ}
-    - ELDA_BASE_URL=${SCOREBOARDBASE_URL}
+    - ELDA_BASE_URL=${SPARQL_EXT_URI}
  
   cron:
     image: digitalagendadata/scoreboard.cron
