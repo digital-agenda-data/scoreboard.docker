@@ -1,7 +1,7 @@
-# scoreboard.docker
+# Scoreboard docker stack
 Scoreboard docker setup
 
-## Scoreboard stack deploy steps - all environments
+## Scoreboard stack - first deploy steps
 
 ### Clone repository locally:
 
@@ -275,9 +275,74 @@ Press **Reuse the existing tables »**
 
 
 
+## Scoreboard stack - upgrade 
+
+### Pull the latest repository version
+
+### If needed, update the images in docker-compose.yml
+
+Manually modify docker-compose.yml with the new image version.
+
+For example:
+```
+  plone:
+    image: digitalagendadata/scoreboard.plone:1.0
+ ```
+to
+```
+  plone:
+    image: digitalagendadata/scoreboard.plone:2.0
+ ```
+
+If you are updating the **PRODUCTION**  image version, you need to save the changes in [GIT](#push-modifications-in-git)  
+
+### Update the environment variables values
+
+Change environment variable value in the .env file.
+
+### Update the configuration files
+
+Update the available configuration files. Any update on PRODUCTION and TEST environments for  **cron/***, **solr/***, **nginx/*** should be saved in [GIT](#push-modifications-in-git).
+
+### Upgrade the stack
+
+#### Restart stack for configuration file changes:
+
+If you only changed the configuration file, it's enough to run restart on the containers:
+
+* For cron/ changes:
+        
+        docker-compose restart cron
+
+* For nginx/ changes:
+        
+        docker-compose restart nginx
+
+* For solr/ changes:
+        
+        docker-compose restart solr
+
+#### Upgrade stack for environment or docker-compose.yml changes:
+
+First you should take note how many plone instances you have running:
+
+      docker-compose ps | grep -c plone
+
+Use the number of running instances to run the upgrade:
+
+      docker-compose up -d --scale plone=<NUMBER_OF_PLONE_INSTANCES>
+     
+      
+## Docker images update
+
+### Crontab image
 
 
-### Tips
+
+
+
+
+## Tips
 
 #### Plone CSS
 If CSS does not look right on the Plone site:
