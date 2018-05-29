@@ -130,7 +130,7 @@ services:
     - ELDA_BASE_URL=${SPARQL_EXT_URI}
  
   cron:
-    image: digitalagendadata/scoreboard.cron
+    image: digitalagendadata/scoreboard.cron:1.0
     restart: always
     hostname: crontab
     volumes:
