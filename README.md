@@ -140,6 +140,39 @@ will become
 * The **elda** container needs access to the external SPARQL link from inside the container. If you are using /etc/hosts, the url will need to be redirected to the NGINX server. That is why the NGINX exposed port must be added to NGINX configuration, in the server that has the /sparql location configured.
 * If you are changing the default URLs from the .env.DEV file, you also need to updated them accordingly in the NGINX configuration file - nginx/project-DEV.conf
 
+
+### Add SSH key to the cron container  - Only on production
+
+The `exportcl.sh` script that updates the [RDF repository](https://github.com/digital-agenda-data/rdf) runs daily on production. It needs to use a SSH private key that has write access to the GIT repo.
+
+####  Copy existing SSH configurations from the current `exportcl.sh` host
+
+1. Connect to the existing host using the scoreboard user
+2. Copy the ~/.ssh contents
+3. Move them to the cron/ssh directory
+
+If you are using the same user/host, you need just to:
+
+     cd <SCOREBOARD.DOCKER_HOME>
+     cp ~/.ssh/* cron/ssh/
+     
+####  Generate new key
+
+Run in <SCOREBOARD.DOCKER_HOME>: 
+
+1. Create a new key 
+
+        ssh-keygen -t rsa -b 4096 -C "scoreboard@digital-agenda-data.eu" -N '' -f cron/ssh/id_rsa
+    
+2. Open the public key file an copy its contents:
+
+        cat cron/ssh/id_rsa.pub 
+
+3. Copy the file contents in: https://github.com/digital-agenda-data/rdf/settings/keys/new    
+    
+4. Keep the existing `cron/ssh/known_hosts` file because it contains the github servers
+
+
 ### Start stack
 
 #### PRODUCTION - multiple plone servers
@@ -264,7 +297,7 @@ Press **Reuse the existing tables »**
 5. You will receive - **Reusing the Tables** - Press **Next**
 6. Press **CONTINUE TO MATOMO**
 
-### Testing
+### Available URLs
 
 1. Plone - <SCOREBOARD_URL>
 2. Elda - http://semantic.<SCOREBOARDBASE_URL>/dataset
@@ -304,7 +337,7 @@ Change environment variable value in the .env file.
 
 Update the available configuration files. Any update on PRODUCTION and TEST environments for  **cron/***, **solr/***, **nginx/*** should be saved in [GIT](#push-modifications-in-git).
 
-### Upgrade the stack
+### Upgrade an existing stack
 
 #### Restart stack for configuration file changes:
 
@@ -333,11 +366,188 @@ Use the number of running instances to run the upgrade:
       docker-compose up -d --scale plone=<NUMBER_OF_PLONE_INSTANCES>
      
       
-## Docker images update
+## Docker images release
 
-### Crontab image
+### To release a new Crontab image
+
+The docker hub automated build can be found on https://hub.docker.com/r/digitalagendadata/scoreboard.cron/
+
+The steps to create a new release, follow this steps on your Dev environment:
+
+1. Update files located in [crontab directory](https://github.com/digital-agenda-data/scoreboard.docker/tree/master/crontab) -  docker image files and [cron directory](https://github.com/digital-agenda-data/scoreboard.docker/tree/master/cron) - scripts and crontab files )
+
+2. Push the changes on master
+
+       git add -A
+       git commit
+       git push
+
+4. On every push to the master branch, a new digitalagendadata/scoreboard.cron:latest image is created. You can view the build status on: https://hub.docker.com/r/digitalagendadata/scoreboard.cron/builds/
+
+4. Once the digitalagendadata/scoreboard.cron:latest image is succesfully built, you can test ( if needed ), and then create a new release. 
+   
+5. View most recent tag on git:
+
+        git describe --tags
+        
+6. Choose a new tag, bigger than the latest one, using a MAJOR.MINOR format. Save it in a variable:
+
+       export NEW_TAG="<NEW_TAG>"
+       
+7. Create and push tag on repo:       
+     
+       git tag -a "$NEW_TAG" -m "$NEW_TAG"
+       git push origin $NEW_TAG
+
+8. Follow the release on docker hub https://hub.docker.com/r/digitalagendadata/scoreboard.cron/builds/. The new image will have the following format:
+
+       digitalagendadata/scoreboard.cron:$NEW_TAG
+       
+9. Update docker-compose.yml with the new image:
+   
+       sed -i 's/image: digitalagendadata\/scoreboard.cron.*/image: digitalagendadata\/scoreboard.cron:$NEW_TAG/' docker-compose.yml
+
+10. Push the change on the GIT repo:
+      
+        git add docker-compose.yml
+        git commit -m "Updated cron image to $NEW_TAG"
+        git push
 
 
+
+
+### To release a new Elda image
+
+The docker hub automated build can be found on https://hub.docker.com/r/digitalagendadata/scoreboard.elda/
+
+The steps to create a new release, follow this steps on your Dev environment:
+
+1. Update files located in [elda directory](https://github.com/digital-agenda-data/scoreboard.docker/tree/master/elda)
+
+2. Push the changes on master
+
+       git add -A
+       git commit
+       git push
+
+4. On every push to the master branch, a new digitalagendadata/scoreboard.elda:latest image is created. You can view the build status on: https://hub.docker.com/r/digitalagendadata/scoreboard.elda/builds/
+
+4. Once the digitalagendadata/scoreboard.elda:latest image is succesfully built, you can test ( if needed ), and then create a new release. 
+   
+5. View most recent tag on git:
+
+        git describe --tags
+        
+6. Choose a new tag, bigger than the latest one, using a MAJOR.MINOR format. Save it in a variable:
+
+       export NEW_TAG="<NEW_TAG>"
+       
+7. Create and push tag on repo:       
+     
+       git tag -a "$NEW_TAG" -m "$NEW_TAG"
+       git push origin $NEW_TAG
+
+8. Follow the release on docker hub https://hub.docker.com/r/digitalagendadata/scoreboard.elda/builds/. The new image will have the following format:
+
+       digitalagendadata/scoreboard.elda:$NEW_TAG
+       
+9. Update docker-compose.yml with the new image:
+   
+       sed -i 's/image: digitalagendadata\/scoreboard.elda.*/image: digitalagendadata\/scoreboard.elda:$NEW_TAG/' docker-compose.yml
+
+10. Push the change on the GIT repo:
+      
+        git add docker-compose.yml
+        git commit -m "Updated elda image to $NEW_TAG"
+        git push
+
+
+
+### To release a new Plone image
+
+
+The docker hub automated build for the production plone images can be found:
+
+
+| Environment        | Dockerfile location        | Base image    | Dockerhub  | How to trigger |
+| ------------- |-------------|-------------|-------------|-----|
+| PRODUCTION     | https://github.com/digital-agenda-data/scoreboard.docker/tree/master/plone | plone:4.3.17 | https://hub.docker.com/r/digitalagendadata/scoreboard.plone | Push on master or Tag |
+| STAGING     | https://github.com/digital-agenda-data/scoreboard.docker/tree/master/plone/staging | digitalagendadata/scoreboard.plone:latest | https://hub.docker.com/r/digitalagendadata/scoreboard.plone.staging/ | New digitalagendadata/scoreboard.plone:latest |
+| DEVEL     | https://github.com/digital-agenda-data/scoreboard.docker/tree/master/plone/devel | digitalagendadata/scoreboard.plone:latest | https://hub.docker.com/r/digitalagendadata/scoreboard.plone.devel/ | New digitalagendadata/scoreboard.plone:latest |
+
+
+#### Create a new plone production release: 
+
+1. Update files in https://github.com/digital-agenda-data/scoreboard.docker/tree/master/plone directory
+
+2. Push the changes on master
+
+       git add -A
+       git commit
+       git push
+
+4. On every push to the master branch, a new digitalagendadata/scoreboard.plone:latest image is created. You can view the build status on: https://hub.docker.com/r/digitalagendadata/scoreboard.plone/builds/.
+
+5. View most recent tag on git:
+
+        git describe --tags
+        
+6. Choose a new tag, bigger than the latest one, using a MAJOR.MINOR format. Save it in a variable:
+
+       export NEW_TAG="<NEW_TAG>"
+       
+7. Create and push tag on repo:       
+     
+       git tag -a "$NEW_TAG" -m "$NEW_TAG"
+       git push origin $NEW_TAG
+
+8. Follow the release on docker hub https://hub.docker.com/r/digitalagendadata/scoreboard.plone/builds/. The new image will have the following format:
+
+       digitalagendadata/scoreboard.plone:$NEW_TAG
+       
+9. Update docker-compose.yml with the new image:
+   
+       sed -i 's/image: digitalagendadata\/scoreboard.plone.*/image: digitalagendadata\/scoreboard.plone:$NEW_TAG/' docker-compose.yml
+
+10. Push the change on the GIT repo:
+      
+        git add docker-compose.yml
+        git commit -m "Updated plone image to $NEW_TAG"
+        git push
+
+
+#### Create a new plone staging image: 
+
+The docker image is based on the digitalagendadata/scoreboard.plone:latest image. To reduce the image building time, if you need to do changes on production and on the staging image, try to combine them in a single commit.
+
+
+1. Update files in the https://github.com/digital-agenda-data/scoreboard.docker/tree/master/plone/staging  directory
+
+2. Push the changes on master
+
+       git add -A
+       git commit
+       git push
+
+4. On every push to the master branch, a new digitalagendadata/scoreboard.plone:latest image is created. You can view the build status on: https://hub.docker.com/r/digitalagendadata/scoreboard.plone/builds/. After the image is created, a new build will be started on https://hub.docker.com/r/digitalagendadata/scoreboard.plone.staging/builds/
+
+
+
+
+#### Create a new plone devel image: 
+
+The docker image is based on the digitalagendadata/scoreboard.plone:latest image. To reduce the image building time, if you need to do changes on production and on the devel image, try to combine them in a single commit.
+
+
+1. Update files in the https://github.com/digital-agenda-data/scoreboard.docker/tree/master/plone/devel  directory
+
+2. Push the changes on master
+
+       git add -A
+       git commit
+       git push
+
+4. On every push to the master branch, a new digitalagendadata/scoreboard.plone:latest image is created. You can view the build status on: https://hub.docker.com/r/digitalagendadata/scoreboard.plone/builds/. After the image is created, a new build will be started on https://hub.docker.com/r/digitalagendadata/scoreboard.plone.devel/builds/
 
 
 
