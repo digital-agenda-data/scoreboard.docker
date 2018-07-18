@@ -1,4 +1,4 @@
-version: "2"
+version: "3"
 services:
 
   memcached:
@@ -148,6 +148,14 @@ services:
     - CRONTAB_CONTREG_URL=${SCOREBOARD_URL}
     - CRONTAB_SOLR_URL=http://solr:8983/solr
     - CRONTAB_DEPLOY_TYPE=${DEPLOY_TYPE}
+
+  mail:
+    image: eeacms/postfix
+    restart: always
+    hostname: digital-agenda-data.eu
+    environment:
+    - MTP_HOST=digital-agenda-data.eu
+    - MTP_DESTINATION=digital-agenda-data.eu
 
 volumes:
   maria_db:
