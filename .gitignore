@@ -1,2 +1,4 @@
 .env
 src/
+docker-compose.override.yml
+virtuoso/virtuoso.pxa
