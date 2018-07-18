@@ -1,8 +1,8 @@
-FROM digitalagendadata/scoreboard.plone:latest 
+FROM digitalagendadata/scoreboard.plone:latest
 
-# needed for egg builds
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends git gcc libffi-dev libc6-dev
+# may be needed for egg builds
+#RUN apt-get update \
+#  && apt-get install -y --no-install-recommends git gcc libffi-dev libc6-dev
 
 # User change needed because /usr/local/bin/{python2.7,pip,buildout}
 # are symlinked into ./bin and the setpermissions part in base.cfg
@@ -16,8 +16,8 @@ RUN rm -rf /plone/instance/src/scoreboard.theme \
    && buildout -c devel.cfg
 
 # cleanup
-USER root
-RUN apt-get purge -y --auto-remove gcc libffi-dev libc6-dev \
-  && rm -rf /var/lib/apt/lists/* \
-  && rm -rf /plone/buildout-cache/downloads/*
+#USER root
+#RUN apt-get purge -y --auto-remove gcc libffi-dev libc6-dev \
+#  && rm -rf /var/lib/apt/lists/* \
+#  && rm -rf /plone/buildout-cache/downloads/*
 
