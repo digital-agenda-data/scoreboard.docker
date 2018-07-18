@@ -1,6 +1,9 @@
 version: "2"
 services:
   plone:
-    build: plone
+    build: plone/devel
     volumes:
       - ./src:/plone/instance/src
+    ports:
+        8080:8080
+
