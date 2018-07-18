@@ -1,9 +1,15 @@
-version: "2"
+version: "3"
 services:
   plone:
-    build: plone/devel
+    build:
+      context: ./plone/devel
+    image: digitalagendadata/scoreboard.plone.devel
     volumes:
       - ./src:/plone/instance/src
     ports:
-        8080:8080
+      - 8080:8080
+    restart: "no"
+    entrypoint: ["tail", "-f", "/dev/null"]
+    environment:
+      SPARQL_DEBUG: "on"
 
