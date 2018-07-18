@@ -1,5 +1,14 @@
 version: "3"
 services:
+
+  nginx:
+    ports:
+    # NB
+    # - the local port is also hardcoded in nginx/project-$DEPLOY_TYPE.conf
+    # - elda will not work on any port other than 80
+    # - TODO: CR login and logout actions ignore the port and redirect to port 80
+    - 80:80
+
   plone:
     build:
       context: ./plone/devel
@@ -9,7 +18,32 @@ services:
     ports:
       - 8080:8080
     restart: "no"
+    # start plone manually using bin/instance fg
     entrypoint: ["tail", "-f", "/dev/null"]
     environment:
       SPARQL_DEBUG: "on"
 
+  virtuoso:
+    ports:
+      - 8890:8890
+
+  elda:
+    image: digitalagendadata/scoreboard.elda
+    ports:
+      - 8081:8080
+    build:
+      context: ./elda
+
+  rsync-server:
+    image: eeacms/rsync:latest
+    ports:
+      - 2222:22/tcp
+    command:
+      - server
+    environment:
+      - SSH_AUTH_KEY="ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAQBYpt2OGOekF047Iv5n0yhYabTE3EW5sj4ByYY5t52RvrmYeNEFYn6y485SCwjIXUyepT1WJyLK+RolITvvZE0xlVFD2nNU/ptRdm2Elxiiye5N4L+KYNpJGjm5Cwkb6+Lm/Hz3pgGjyxlSCDptZCbubd702bCP0HmtH2MXI2Ri2lqM6uEpK9xt/euPo7vGf82ur3MSvZPfushUk3d1sAyMh2pioJ4AM/PgbnI5jYoZ/JlxVM3BF9PTTZq4ClZSDXSDUXaCJEVMgjp5Qr6wqK0/KAPjaBhFzQCpmYFvuGiblBWNEVW1MeInYqfHLPWplPHFBGkISXFx0kJ7pjHNNhr1 andrei.melis rsa 2048"
+      - TZ=Europe/Copenhagen
+    tty: true
+    stdin_open: true
+    volumes:
+    - virtuoso_db:/data

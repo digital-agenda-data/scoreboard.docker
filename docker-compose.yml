@@ -55,10 +55,11 @@ services:
 
   virtuoso:
      image: openlink/virtuoso_opensource:v07.20.3217
-     restart: always     
+     restart: always
      volumes:
        - ./virtuoso:/opt/virtuoso-opensource/database
        - virtuoso_db:/data
+       - virtuoso_backup:/backup
        - exported_datasets:/var/www/html/download
 
   content_registry:
@@ -109,12 +110,10 @@ services:
     - piwik
     - solr
     restart: always
-    ports:
-    - 81:80
     volumes:
     - ./nginx/globals.conf:/etc/nginx/conf.d/globals.conf:ro
     - ./nginx/project-${DEPLOY_TYPE}.conf:/etc/nginx/conf.d/project.conf:ro
-    - piwik_files:/var/www/html/ 
+    - piwik_files:/var/www/html/
     - exported_datasets:/export/download
     environment:
     - TZ=${TZ}
@@ -127,7 +126,7 @@ services:
     - "nginx:${SCOREBOARDBASE_URL}"
     environment:
     - TZ=${TZ}
-    - ELDA_BASE_URL=${SPARQL_EXT_URI}
+    - ELDA_SPARQL_ENDPOINT=${ELDA_SPARQL_ENDPOINT}
  
   cron:
     image: digitalagendadata/scoreboard.cron:1.0
@@ -162,6 +161,7 @@ services:
 volumes:
   maria_db:
   virtuoso_db:
+  virtuoso_backup:
   content_registry:
   zeodata:
   solrdata:
