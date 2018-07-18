@@ -1,10 +1,10 @@
 #!/bin/bash
 
 
- #enable cron logging
+# enable cron logging
 service rsyslog restart
-    
-    #add crontab
+
+# add crontab
 crontab /var/crontab.txt
 chmod 600 /etc/crontab
 
