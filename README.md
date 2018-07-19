@@ -315,7 +315,7 @@ Run in <SCOREBOARD.DOCKER_HOME>:
 Press **Reuse the existing tables »**
 5. You will receive - **Reusing the Tables** - Press **Next**
 6. Press **CONTINUE TO MATOMO**
-7. Remember to configure the tracking url in Plone (<SCOREBOARD_URL>/portal_skins/custom/analytics.js)
+7. Remember to configure the tracking url in Plone (<SCOREBOARD_URL>/portal_skins/custom/analytics.js/manage_main)
 
 ### Available URLs
 
@@ -324,7 +324,7 @@ Press **Reuse the existing tables »**
 3. Content Registry - <SCOREBOARD_URL>/data/
 4. Download - <SCOREBOARD_URL>/datasets/desi#download
 5. Sparql - <SCOREBOARD_URL>/sparql
-6. Piwik - <SCOREBOARD_URL>/analytics/piwik/index.php
+6. Piwik - <SCOREBOARD_URL>/analytics/index.php
 
 
 
