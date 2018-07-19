@@ -25,14 +25,16 @@ Scoreboard docker setup
 
 #### URLs
 1. DEPLOY_TYPE - should be set to  TEST, PROD or DEV - will be used in NGINX, SOLR and CRONTAB configuration
-2. SCOREBOARDBASE_URL - the main url under which the site will be used:
-    * FOR PRODUCTION must be digital-agenda-data.eu
-    * For TEST must be test.digital-agenda-data.eu
-3. SPARQL_EXT_URI - used in ELDA, is the way to access the SPARQL Virtuoso url both from the browser and the container.
-4. SCOREBOARD_URL - used in CONTENT REGISTRY application, must be the one that is accessed from the browser - example:
- http://digital-agenda-data.eu, or  http://test.digital-agenda-data.eu or  https://test.digital-agenda-data.eu:81
+2. SCOREBOARDBASE_URL - the main domain name under which the site will be used:
+    * FOR PRODUCTION it is digital-agenda-data.eu
+    * For TEST it is test.digital-agenda-data.eu
+    * For DEV it is dev.digital-agenda-data.eu
+    * Note: to change these URLs, you must also edit nginx/project-${DEPLOY_TYPE} config files (nginx server_name and Plone VirtualHostBase)
+3. ELDA_SPARQL_ENDPOINT - used by ELDA, is the way to access the SPARQL Virtuoso url both from the browser and the container.
+4. SCOREBOARD_URL - the main URL (the one that is accessed from the browser), used by Content Registry and cron jobs - example:
+ https://digital-agenda-data.eu, or  http://test.digital-agenda-data.eu or http://dev.digital-agenda-data.eu:81
 
- 
+
 #### VIRTUOSO DB PASSWORDS 
 If you are restoring the database from another environment, please copy here the same passwords that are saved in the database:
 
@@ -169,55 +171,64 @@ Run in <SCOREBOARD.DOCKER_HOME>:
         cat cron/ssh/id_rsa.pub 
 
 3. Copy the file contents in: https://github.com/digital-agenda-data/rdf/settings/keys/new    
-    
+
 4. Keep the existing `cron/ssh/known_hosts` file because it contains the github servers
 
 
 ### Start stack
 
 #### PRODUCTION - multiple plone servers
+
     docker-compose up -d --scale plone=2
 
-#### DEV, TEST - one plone server  
+#### DEV, TEST - one plone server
+
     docker-compose up -d
 
 ### Import data
 
 #### Import plone data
 
-1. Stop zeo server
 
-    docker-compose stop zeoserver
-    
-2. Identify zeo docker name - <ZEO_DOCKER_NAME>:
+1. Identify zeo docker name - <ZEO_DOCKER_NAME>:
+
       docker-compose ps  | grep zeo
 
-3. Copy blobstorage and filestorage directories from the source plone site and put it into the current directory
+2. Copy blobstorage and filestorage directories from the source plone site and put it into the current directory
 
-4. Copy blobstorage and filestorage directories  to the zeoserver data volume:
+3. Copy blobstorage and filestorage directories  to the zeoserver data volume:
+
     docker cp blobstorage <ZEO_DOCKER_NAME>:/data/
     docker cp filestorage <ZEO_DOCKER_NAME>:/data/
-5. Start server
-    docker-compose start zeoserver
-6. Run chown on the /data directory from the server to make sure all the files have the correct permissions
+
+4. Run chown on the /data directory from the server to make sure all the files have the correct permissions
     docker-compose exec zeoserver sh -c "chown -R 500:500 /data"
-7. Restart zeoserver 
+
+5. Restart zeoserver 
+
     docker-compose restart zeoserver
-8. Check zeoserver logs for errors
+
+6. Check zeoserver logs for errors
+
     docker-compose logs -f zeoserver
-9. Restart plone 
+
+7. Restart plone
+
     docker-compose restart plone
-8. Check zeoserver logs for errors
-    docker-compose logs -f plone    
-    
+
+8. Check plone logs for errors
+
+    docker-compose logs -f plone
+
 
 #### Import virtuoso db data
 
 1. Stop virtuoso server
 
     docker-compose stop virtuoso
-    
-2. Identify zeo docker name - <VIRTUOSO_DOCKER_NAME> ( check first column on the following command) :
+
+2. Identify virtuoso docker name - <VIRTUOSO_DOCKER_NAME> ( check first column on the following command) :
+
       docker-compose ps  | grep virtuoso
 
 3. Copy database backup from source database and name it virtuoso.db
@@ -226,19 +237,25 @@ Run in <SCOREBOARD.DOCKER_HOME>:
 
     docker inspect <VIRTUOSO_DOCKER_NAME> | grep volume
 
+## TODO: rewrite so it works also on Windows
+
 <VIRTUOSO_VOLUME_PATH> should be similar to /var/lib/docker/volumes/<STACKNAME>_virtuoso_db/_data
-  
+
 5. Clean-up the volume:
+
    sudo rm -rf <VIRTUOSO_VOLUME_PATH>/* 
-   
+
 6. Copy the database:
+
    sudo cp virtuoso.db <VIRTUOSO_VOLUME_PATH>/
 
-5. Start server
+7. Start server
+
     docker-compose start virtuoso
 
-6. Check virtuoso logs for errors
-    docker-compose logs -f zeoserver
+8. Check virtuoso logs for errors
+
+    docker-compose logs -f virtuoso
 
 
 
@@ -281,6 +298,8 @@ Run in <SCOREBOARD.DOCKER_HOME>:
   * If you imported the database so all the users are already created, you need to run:     
      $ ./init_conreg_db_restore.sh
 
+
+
 ### Piwik configuration
 
 1. Go to <SCOREBOARD_URL>/analytics/piwik/index.php?action=databaseSetup
@@ -296,11 +315,12 @@ Run in <SCOREBOARD.DOCKER_HOME>:
 Press **Reuse the existing tables »**
 5. You will receive - **Reusing the Tables** - Press **Next**
 6. Press **CONTINUE TO MATOMO**
+7. Remember to configure the tracking url in Plone (<SCOREBOARD_URL>/portal_skins/custom/analytics.js)
 
 ### Available URLs
 
 1. Plone - <SCOREBOARD_URL>
-2. Elda - http://semantic.<SCOREBOARDBASE_URL>/dataset
+2. Elda - always http://semantic.digital-agenda-data.eu/dataset (must be added in /etc/hosts for local development)
 3. Content Registry - <SCOREBOARD_URL>/data/
 4. Download - <SCOREBOARD_URL>/datasets/desi#download
 5. Sparql - <SCOREBOARD_URL>/sparql
@@ -516,7 +536,7 @@ The docker hub automated build for the production plone images can be found:
         git push
 
 
-#### Create a new plone staging image: 
+#### Create a new plone staging image:
 
 The docker image is based on the digitalagendadata/scoreboard.plone:latest image. To reduce the image building time, if you need to do changes on production and on the staging image, try to combine them in a single commit.
 
@@ -558,3 +578,5 @@ The docker image is based on the digitalagendadata/scoreboard.plone:latest image
 If CSS does not look right on the Plone site:
 <SCOREBOARD_URL>/portal_css/manage_cssForm - Uncheck reset.css and click SAVE
 
+
+## TODO: Fix PIWIK - configure geoip2 for nginx
