@@ -19,7 +19,7 @@ RUN set -x && DEBIAN_FRONTEND=noninteractive apt-get update \
 
 
 RUN sed -i '/pid/a # GeoIP module\nload_module modules\/ngx_http_geoip2_module.so;' /etc/nginx/nginx.conf	\
-    && sed -i '/keepalive_timeout/a \    # GeoIP database\n    geoip2 \/usr\/share\/geoip\/GeoLite2-Country.mmdb {\n        $geoip2_data_country_code default=SE source=$remote_addr country iso_code;\n        $geoip2_data_country_name country names en;\n}' /etc/nginx/nginx.conf
+    && sed -i '/keepalive_timeout/a \\n    # GeoIP Country database\n    geoip2 \/usr\/share\/geoip\/GeoLite2-Country.mmdb {\n        auto_reload 5m;\n        $geoip2_metadata_country_build metadata build_epoch;\n        $geoip2_data_country_code default=US source=$remote_addr country iso_code;\n        $geoip2_data_country_name country names en;\n    }\n\n    # GeoIP City Database\n    geoip2 \/usr\/share\/geoip\/GeoLite2-City.mmdb {\n        $geoip2_data_city_name default=London city names en;\n    }' /etc/nginx/nginx.conf 
 
 
 # Install Maxmind db library
@@ -63,7 +63,11 @@ RUN set -x \
 RUN set -x && mkdir -p /usr/share/geoip \
   && wget -O /tmp/country.tar.gz http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz \
   && tar xf /tmp/country.tar.gz -C /usr/share/geoip --strip 1 \
+  && wget -O /tmp/city.tar.gz http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz \
+  && tar xf /tmp/city.tar.gz  -C /usr/share/geoip --strip 1 \
   && ls -al /usr/share/geoip/
+
+VOLUME /usr/share/geoip
 
 EXPOSE 80
 EXPOSE 443

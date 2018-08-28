@@ -54,7 +54,7 @@ services:
     
 
   virtuoso:
-     image: openlink/virtuoso_opensource:v07.20.3217
+     image: tenforce/virtuoso:virtuoso7.2.5
      restart: always
      volumes:
        - ./virtuoso:/opt/virtuoso-opensource/database
@@ -104,7 +104,7 @@ services:
 
 
   nginx:
-    image: nginx:1.13
+    build: ./docker/nginx/
     depends_on:
     - haproxy
     - piwik
@@ -115,6 +115,7 @@ services:
     - ./nginx/project-${DEPLOY_TYPE}.conf:/etc/nginx/conf.d/project.conf:ro
     - piwik_files:/var/www/html
     - exported_datasets:/export/download
+    - geoipdb:/usr/share/geoip/
     environment:
     - TZ=${TZ}
 
@@ -140,6 +141,7 @@ services:
     - ./cron/ssh:/root/.ssh
     - codelists:/var/local/rdf
     - exported_datasets:/var/www/html/download
+    - geoipdb:/usr/share/geoip/
     environment:
     - CRONTAB_SPARQL_ENDPOINT=http://virtuoso:8890/sparql
     - CRONTAB_ISQL_HOST=virtuoso
@@ -169,4 +171,4 @@ volumes:
   exported_datasets:
   piwik_files:
   plone_data:
-
+  geoipdb:
