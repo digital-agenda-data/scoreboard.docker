@@ -16,6 +16,10 @@ services:
     environment:
       SPARQL_DEBUG: "on"
 
+  virtuoso:
+    ports:
+      - 127.0.0.1:8891:8890
+
   elda:
     build:
       context: ./docker/elda
