@@ -15,7 +15,6 @@ services:
     restart: always
     depends_on:
     - zeoserver
-    - memcached
     environment:
       ZEO_ADDRESS: "zeoserver:8080"
       MEMCACHE_SERVER: "memcached:11211"
@@ -49,7 +48,7 @@ services:
     entrypoint:
       - docker-entrypoint.sh
       - solr-precreate
-      - scoreboard 
+      - scoreboard
       - /core-template/scoreboard-${DEPLOY_TYPE}
     
 
@@ -57,18 +56,37 @@ services:
      image: tenforce/virtuoso:virtuoso7.2.5
      restart: always
      volumes:
-       - ./virtuoso:/opt/virtuoso-opensource/database
        - virtuoso_db:/data
+       - virtuoso_logs:/logs
        - virtuoso_backup:/backup
-       - exported_datasets:/var/www/html/download
+       - exported_datasets:/export/download
+       - ./virtuoso-scripts:/virtuoso-scripts
+     environment:
+      VIRT_Database_ErrorLogFile: "/logs/virtuoso.log"
+      VIRT_HTTPServer_ServerPort: 8890
+      VIRT_HTTPServer_HTTPLogFile: "/logs/virtuoso-http.log"
+      VIRT_HTTPServer_DefaultMailServer: "mail:25"
+      VIRT_HTTPServer_MaxClientConnections: 4
+      VIRT_HTTPServer_ServerThreads: 4
+      VIRT_Parameters_ServerPort: 1111
+      VIRT_Parameters_NumberOfBuffers: 170000
+      VIRT_Parameters_MaxDirtyBuffers: 130000
+      VIRT_Parameters_DirsAllowed: "., /backup, /export/download, /tmp, /usr/local/virtuoso-opensource/share/virtuoso/vad"
+      VIRT_SPARQL_ResultSetMaxRows: 1000000
+      VIRT_SPARQL_ResultSetMaxRows: 1000000
+      VIRT_SPARQL_MaxQueryCostEstimationTime: 5000
+      VIRT_SPARQL_MaxQueryExecutionTime: 300
+      VIRT_SPARQL_DefaultQuery: "PREFIX qb: <http://purl.org/linked-data/cube#>
+        PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+        PREFIX dad-prop: <http://semantic.digital-agenda-data.eu/def/property/>
+        select distinct ?dataset where { ?obs a qb:Observation; qb:dataSet ?dataset }"
+      VIRT_URIQA_DynamicLocal: 1
 
-  content_registry:
-     image: digitalagendadata/scoreboard.contreg
+  cr:
+     image: digitalagendadata/cr
      restart: always
-     depends_on:
-     - virtuoso
      volumes:
-       - content_registry:/var/local/cr/apphome
+       - cr_home:/var/local/cr/apphome
      environment:
        TZ: "${TZ}"
        HOME_URL: "${SCOREBOARD_URL}/data"
@@ -130,7 +148,7 @@ services:
     - ELDA_SPARQL_ENDPOINT=${ELDA_SPARQL_ENDPOINT}
  
   cron:
-    image: digitalagendadata/scoreboard.cron:1.0
+    image: digitalagendadata/scoreboard.cron:1.1
     restart: always
     hostname: crontab
     links:
@@ -140,7 +158,7 @@ services:
     - ./cron/scripts:/var/cron/scripts
     - ./cron/ssh:/root/.ssh
     - codelists:/var/local/rdf
-    - exported_datasets:/var/www/html/download
+    - exported_datasets:/export/download
     - geoipdb:/usr/share/geoip/
     environment:
     - CRONTAB_SPARQL_ENDPOINT=http://virtuoso:8890/sparql
@@ -163,8 +181,9 @@ services:
 volumes:
   maria_db:
   virtuoso_db:
+  virtuoso_logs:
   virtuoso_backup:
-  content_registry:
+  cr_home:
   zeodata:
   solrdata:
   codelists:

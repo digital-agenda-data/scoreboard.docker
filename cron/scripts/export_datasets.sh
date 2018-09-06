@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export OUTPUT_DIR=/var/www/html/download
+export OUTPUT_DIR=/export/download
 
 source /etc/environment
 

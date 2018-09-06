@@ -2,3 +2,5 @@
 src/
 docker-compose.override.yml
 virtuoso/virtuoso.pxa
+cron/scripts/isql.script
+data/

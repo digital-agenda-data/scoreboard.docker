@@ -16,7 +16,7 @@ RUN rm -rf /plone/instance/src/scoreboard.theme \
    && buildout -c devel.cfg
 
 # cleanup
-#USER root
+USER root
 #RUN apt-get purge -y --auto-remove gcc libffi-dev libc6-dev \
 #  && rm -rf /var/lib/apt/lists/* \
 #  && rm -rf /plone/buildout-cache/downloads/*

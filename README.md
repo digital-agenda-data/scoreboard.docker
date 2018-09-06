@@ -237,6 +237,10 @@ Run in <SCOREBOARD.DOCKER_HOME>:
 
     docker inspect <VIRTUOSO_DOCKER_NAME> | grep volume
 
+or
+
+    docker ps --filter expose=8890 --format "{{.Names}}" | xargs docker inspect | grep virtuoso_db
+
 ## TODO: rewrite so it works also on Windows
 
 <VIRTUOSO_VOLUME_PATH> should be similar to /var/lib/docker/volumes/<STACKNAME>_virtuoso_db/_data
@@ -256,6 +260,9 @@ Run in <SCOREBOARD.DOCKER_HOME>:
 8. Check virtuoso logs for errors
 
     docker-compose logs -f virtuoso
+
+
+#### Import CR data
 
 
 
@@ -291,7 +298,7 @@ Run in <SCOREBOARD.DOCKER_HOME>:
 #### Content registry configuration
 
 1. Go to the init script location
-     $ cd init_scripts
+     $ cd cr_init_scripts
 2.
   * If you did not import the database, you need to run:
      $ ./init_conreg.sh

@@ -1,73 +1,30 @@
 version: "3"
 services:
 
-  memcached:
-    restart: "no"
-
   nginx:
-    restart: "no"
     ports:
     # NB
     # - the local port is also hardcoded in nginx/project-$DEPLOY_TYPE.conf
     # - elda will not work on any port other than 80
     # - TODO: CR login and logout actions ignore the port and redirect to port 80
-    - 80:80
+    - 127.0.0.1:81:80
 
   plone:
     build:
-      context: ./docker/plone/devel
-    image: digitalagendadata/scoreboard.plone.devel
-    volumes:
-      - ./src:/plone/instance/src
-    ports:
-      - 8080:8080
-    restart: "no"
-    command: "fg"
+      context: ./docker/plone/staging
+    image: digitalagendadata/scoreboard.plone.staging
     environment:
       SPARQL_DEBUG: "on"
 
-  haproxy:
-    restart: "no"
-
-  zeoserver:
-    restart: "no"
-
-  solr:
-    restart: "no"
-
-  virtuoso:
-    restart: "no"
-    ports:
-      - 8890:8890
-
-  cr:
-     restart: "no"
-
-  mariadb:
-    restart: "no"
-
-  piwik:
-    restart: "no"
-
   elda:
-    image: digitalagendadata/scoreboard.elda
-    restart: "no"
-    ports:
-      - 8081:8080
     build:
       context: ./docker/elda
-
-  cron:
-    restart: "no"
-
-  mail:
-    restart: "no"
 
   rsync-server:
     image: eeacms/rsync:latest
     restart: "no"
     ports:
-      - 2222:22/tcp
+      - 127.0.0.1:2222:22/tcp
     command:
       - server
     environment:
