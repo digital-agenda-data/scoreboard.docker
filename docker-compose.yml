@@ -189,5 +189,4 @@ volumes:
   codelists:
   exported_datasets:
   piwik_files:
-  plone_data:
   geoipdb:
