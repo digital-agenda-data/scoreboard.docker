@@ -12,7 +12,7 @@ services:
   plone:
     build:
       context: ./docker/plone/staging
-    image: digitalagendadata/scoreboard.plone.staging
+    image: digitalagendadata/plone.staging
     environment:
       SPARQL_DEBUG: "on"
 

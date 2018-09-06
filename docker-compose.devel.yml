@@ -16,7 +16,7 @@ services:
   plone:
     build:
       context: ./docker/plone/devel
-    image: digitalagendadata/scoreboard.plone.devel
+    image: digitalagendadata/plone.devel
     volumes:
       - ./src:/plone/instance/src
     ports:

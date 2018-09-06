@@ -96,7 +96,7 @@ If you want to deploy another version on plone site ( DEV or TEST) you need to s
 So:
 ```
   plone:
-    image: digitalagendadata/scoreboard.plone:1.0
+    image: digitalagendadata/plone:latest
     restart: always
     depends_on:
     - zeoserver
@@ -109,7 +109,7 @@ So:
 will become
 ```
   plone:
-    image: digitalagendadata/scoreboard.plone.staging
+    image: digitalagendadata/plone.staging
     restart: always
     depends_on:
     - zeoserver
@@ -346,12 +346,12 @@ Manually modify docker-compose.yml with the new image version.
 For example:
 ```
   plone:
-    image: digitalagendadata/scoreboard.plone:1.0
+    image: digitalagendadata/plone:1.0
  ```
 to
 ```
   plone:
-    image: digitalagendadata/scoreboard.plone:2.0
+    image: digitalagendadata/plone:2.0
  ```
 
 If you are updating the **PRODUCTION**  image version, you need to save the changes in [GIT](#push-modifications-in-git)  
@@ -498,9 +498,9 @@ The docker hub automated build for the production plone images can be found:
 
 | Environment        | Dockerfile location        | Base image    | Dockerhub  | How to trigger |
 | ------------- |-------------|-------------|-------------|-----|
-| PRODUCTION     | https://github.com/digital-agenda-data/scoreboard.docker/tree/master/plone | plone:4.3.17 | https://hub.docker.com/r/digitalagendadata/scoreboard.plone | Push on master or Tag |
-| STAGING     | https://github.com/digital-agenda-data/scoreboard.docker/tree/master/plone/staging | digitalagendadata/scoreboard.plone:latest | https://hub.docker.com/r/digitalagendadata/scoreboard.plone.staging/ | New digitalagendadata/scoreboard.plone:latest |
-| DEVEL     | https://github.com/digital-agenda-data/scoreboard.docker/tree/master/plone/devel | digitalagendadata/scoreboard.plone:latest | https://hub.docker.com/r/digitalagendadata/scoreboard.plone.devel/ | New digitalagendadata/scoreboard.plone:latest |
+| PRODUCTION     | https://github.com/digital-agenda-data/scoreboard.docker/tree/master/plone | plone:4.3.17 | https://hub.docker.com/r/digitalagendadata/plone | Push on master or Tag |
+| STAGING     | https://github.com/digital-agenda-data/scoreboard.docker/tree/master/plone/staging | digitalagendadata/plone:latest | https://hub.docker.com/r/digitalagendadata/plone.staging/ | New digitalagendadata/plone:latest |
+| DEVEL     | https://github.com/digital-agenda-data/scoreboard.docker/tree/master/plone/devel | digitalagendadata/plone:latest | https://hub.docker.com/r/digitalagendadata/plone.devel/ | New digitalagendadata/plone:latest |
 
 
 #### Create a new plone production release: 
@@ -513,7 +513,7 @@ The docker hub automated build for the production plone images can be found:
        git commit
        git push
 
-4. On every push to the master branch, a new digitalagendadata/scoreboard.plone:latest image is created. You can view the build status on: https://hub.docker.com/r/digitalagendadata/scoreboard.plone/builds/.
+4. On every push to the master branch, a new digitalagendadata/plone:latest image is created. You can view the build status on: https://hub.docker.com/r/digitalagendadata/plone/builds/.
 
 5. View most recent tag on git:
 
@@ -528,13 +528,13 @@ The docker hub automated build for the production plone images can be found:
        git tag -a "$NEW_TAG" -m "$NEW_TAG"
        git push origin $NEW_TAG
 
-8. Follow the release on docker hub https://hub.docker.com/r/digitalagendadata/scoreboard.plone/builds/. The new image will have the following format:
+8. Follow the release on docker hub https://hub.docker.com/r/digitalagendadata/plone/builds/. The new image will have the following format:
 
-       digitalagendadata/scoreboard.plone:$NEW_TAG
+       digitalagendadata/plone:$NEW_TAG
        
 9. Update docker-compose.yml with the new image:
    
-       sed -i 's/image: digitalagendadata\/scoreboard.plone.*/image: digitalagendadata\/scoreboard.plone:$NEW_TAG/' docker-compose.yml
+       sed -i 's/image: digitalagendadata\/plone.*/image: digitalagendadata\/plone:$NEW_TAG/' docker-compose.yml
 
 10. Push the change on the GIT repo:
       
@@ -545,7 +545,7 @@ The docker hub automated build for the production plone images can be found:
 
 #### Create a new plone staging image:
 
-The docker image is based on the digitalagendadata/scoreboard.plone:latest image. To reduce the image building time, if you need to do changes on production and on the staging image, try to combine them in a single commit.
+The docker image is based on the digitalagendadata/plone:latest image. To reduce the image building time, if you need to do changes on production and on the staging image, try to combine them in a single commit.
 
 
 1. Update files in the https://github.com/digital-agenda-data/scoreboard.docker/tree/master/plone/staging  directory
@@ -556,14 +556,14 @@ The docker image is based on the digitalagendadata/scoreboard.plone:latest image
        git commit
        git push
 
-4. On every push to the master branch, a new digitalagendadata/scoreboard.plone:latest image is created. You can view the build status on: https://hub.docker.com/r/digitalagendadata/scoreboard.plone/builds/. After the image is created, a new build will be started on https://hub.docker.com/r/digitalagendadata/scoreboard.plone.staging/builds/
+4. On every push to the master branch, a new digitalagendadata/plone:latest image is created. You can view the build status on: https://hub.docker.com/r/digitalagendadata/plone/builds/. After the image is created, a new build will be started on https://hub.docker.com/r/digitalagendadata/plone.staging/builds/
 
 
 
 
 #### Create a new plone devel image: 
 
-The docker image is based on the digitalagendadata/scoreboard.plone:latest image. To reduce the image building time, if you need to do changes on production and on the devel image, try to combine them in a single commit.
+The docker image is based on the digitalagendadata/plone:latest image. To reduce the image building time, if you need to do changes on production and on the devel image, try to combine them in a single commit.
 
 
 1. Update files in the https://github.com/digital-agenda-data/scoreboard.docker/tree/master/plone/devel  directory
@@ -574,7 +574,7 @@ The docker image is based on the digitalagendadata/scoreboard.plone:latest image
        git commit
        git push
 
-4. On every push to the master branch, a new digitalagendadata/scoreboard.plone:latest image is created. You can view the build status on: https://hub.docker.com/r/digitalagendadata/scoreboard.plone/builds/. After the image is created, a new build will be started on https://hub.docker.com/r/digitalagendadata/scoreboard.plone.devel/builds/
+4. On every push to the master branch, a new digitalagendadata/plone:latest image is created. You can view the build status on: https://hub.docker.com/r/digitalagendadata/plone/builds/. After the image is created, a new build will be started on https://hub.docker.com/r/digitalagendadata/plone.devel/builds/
 
 
 

@@ -11,7 +11,7 @@ services:
     - "2048"
 
   plone:
-    image: digitalagendadata/scoreboard.plone
+    image: digitalagendadata/plone
     restart: always
     depends_on:
     - zeoserver

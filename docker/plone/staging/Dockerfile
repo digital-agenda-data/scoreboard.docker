@@ -1,4 +1,4 @@
-FROM digitalagendadata/scoreboard.plone:latest
+FROM digitalagendadata/plone:latest
 
 # needed for egg builds
 #RUN apt-get update \
