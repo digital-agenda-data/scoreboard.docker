@@ -59,6 +59,8 @@ services:
 
   cron:
     restart: "no"
+    links:
+    - "nginx:${SCOREBOARDBASE_URL}"
 
   mail:
     restart: "no"

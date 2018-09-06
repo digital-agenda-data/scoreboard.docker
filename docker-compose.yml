@@ -151,8 +151,6 @@ services:
     image: digitalagendadata/scoreboard.cron:1.1
     restart: always
     hostname: crontab
-    links:
-    - "nginx:${SCOREBOARDBASE_URL}"
     volumes:
     - ./cron/cron_jobs.txt:/var/crontab.txt
     - ./cron/scripts:/var/cron/scripts
@@ -166,7 +164,7 @@ services:
     - CRONTAB_ISQL_PORT=1111
     - CRONTAB_ISQL_USER=dba
     - CRONTAB_ISQL_PASSWORD=${VIRTUOSO_DBA_PASSWORD}
-    - CRONTAB_SCOREBOARD_URL=${SCOREBOARD_URL}
+    - CRONTAB_SCOREBOARD_URL=http://plone:8080/Plone
     - CRONTAB_SOLR_URL=http://solr:8983/solr
     - CRONTAB_DEPLOY_TYPE=${DEPLOY_TYPE}
 
