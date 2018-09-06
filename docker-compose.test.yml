@@ -22,6 +22,7 @@ services:
 
   rsync-server:
     image: eeacms/rsync:latest
+    container_name: rsync
     restart: "no"
     ports:
       - 127.0.0.1:2222:22/tcp
@@ -33,5 +34,7 @@ services:
     tty: true
     stdin_open: true
     volumes:
-    - virtuoso_db:/data
+    - virtuoso_db:/virtuoso-data
     - maria_db:/var/lib/mysql
+    - cr_home:/var/local/cr/apphome
+    - zeodata:/plone-data
