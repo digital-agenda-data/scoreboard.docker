@@ -19,7 +19,7 @@ RUN set -x && DEBIAN_FRONTEND=noninteractive apt-get update \
 
 
 RUN sed -i '/pid/a # GeoIP module\nload_module modules\/ngx_http_geoip2_module.so;' /etc/nginx/nginx.conf	\
-    && sed -i '/keepalive_timeout/a \\n    # GeoIP Country database\n    geoip2 \/usr\/share\/geoip\/GeoLite2-Country.mmdb {\n        auto_reload 5m;\n        $geoip2_metadata_country_build metadata build_epoch;\n        $geoip2_data_country_code default=US source=$remote_addr country iso_code;\n        $geoip2_data_country_name country names en;\n    }\n\n    # GeoIP City Database\n    geoip2 \/usr\/share\/geoip\/GeoLite2-City.mmdb {\n        $geoip2_data_city_name default=London city names en;\n    }' /etc/nginx/nginx.conf 
+    && sed -i '/keepalive_timeout/a \\n    # GeoIP Country database\n    geoip2 \/usr\/share\/geoip\/GeoLite2-Country.mmdb {\n        auto_reload 5m;\n        $geoip2_metadata_country_build metadata build_epoch;\n        $geoip2_data_country_code default=US source=$http_x_forwarded_for country iso_code;\n        $geoip2_data_country_name source=$http_x_forwarded_for country names en;\n    }\n\n    # GeoIP City Database\n    geoip2 \/usr\/share\/geoip\/GeoLite2-City.mmdb {\n        $geoip2_data_city_name source=$http_x_forwarded_for default=London city names en;\n    }' /etc/nginx/nginx.conf
 
 
 # Install Maxmind db library
