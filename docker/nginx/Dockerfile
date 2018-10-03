@@ -14,20 +14,12 @@ RUN set -x && DEBIAN_FRONTEND=noninteractive apt-get update \
     wget \
     unzip
 
-# The actual nginx server config, this needs to get loaded last.
-# Make sure you copy it to default.conf to overwrite the normal config!
 
-
-RUN sed -i '/pid/a # GeoIP module\nload_module modules\/ngx_http_geoip2_module.so;' /etc/nginx/nginx.conf	\
-    && sed -i '/keepalive_timeout/a \\n    # GeoIP Country database\n    geoip2 \/usr\/share\/geoip\/GeoLite2-Country.mmdb {\n        auto_reload 5m;\n        $geoip2_metadata_country_build metadata build_epoch;\n        $geoip2_data_country_code default=US source=$http_x_forwarded_for country iso_code;\n        $geoip2_data_country_name source=$http_x_forwarded_for country names en;\n    }\n\n    # GeoIP City Database\n    geoip2 \/usr\/share\/geoip\/GeoLite2-City.mmdb {\n        $geoip2_data_city_name source=$http_x_forwarded_for default=London city names en;\n    }' /etc/nginx/nginx.conf
-
-
-# Install Maxmind db library
-ENV MAXMIND_VERSION=1.3.2
-RUN set -x \
-  && wget https://github.com/maxmind/libmaxminddb/releases/download/${MAXMIND_VERSION}/libmaxminddb-${MAXMIND_VERSION}.tar.gz \
-  && tar xf libmaxminddb-${MAXMIND_VERSION}.tar.gz \
-  && cd libmaxminddb-${MAXMIND_VERSION} \
+# Install latest Maxmind db library
+RUN set -x \  
+  && wget $(wget -q -O - https://api.github.com/repos/maxmind/libmaxminddb/releases/latest | grep browser_download_url | awk -F\" '{print $4}') \
+  && tar xf libmaxminddb-*.tar.gz \
+  && cd libmaxminddb-* \
   && ./configure \
   && make \
   && make check \
