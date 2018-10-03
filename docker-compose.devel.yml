@@ -6,6 +6,7 @@ services:
 
   nginx:
     restart: "no"
+    # build: ./docker/nginx/
     ports:
     # NB
     # - the local port is also hardcoded in nginx/project-$DEPLOY_TYPE.conf

@@ -122,7 +122,7 @@ services:
 
 
   nginx:
-    image: digitalagendadata/scoreboard.nginx
+    image: digitalagendadata/nginx
     depends_on:
     - haproxy
     - piwik
