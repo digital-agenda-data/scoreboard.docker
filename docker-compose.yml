@@ -87,6 +87,7 @@ services:
      restart: always
      volumes:
        - cr_home:/var/local/cr/apphome
+       - cr_logs:/usr/local/tomcat/logs
      environment:
        TZ: "${TZ}"
        HOME_URL: "${SCOREBOARD_URL}/data"
@@ -182,6 +183,7 @@ volumes:
   virtuoso_logs:
   virtuoso_backup:
   cr_home:
+  cr_logs:
   zeodata:
   solrdata:
   codelists:
