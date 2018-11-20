@@ -3,4 +3,6 @@ src/
 docker-compose.override.yml
 virtuoso/virtuoso.pxa
 cron/scripts/isql.script
+cron/ssh/id_rsa
+cron/ssh/id_rsa.pub
 data/
