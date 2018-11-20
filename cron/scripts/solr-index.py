@@ -35,6 +35,7 @@ MULTIPLE_PROPS = set(['group_notation'])
 datasets = requests.get(args.base_path + '/@@datacubesForSelect').json()
 
 for dataset in datasets['options']:
+    print(dataset['uri'] + '/dimension_metadata')
     data = requests.get(dataset['uri'] + '/dimension_metadata').json()
     if 'indicator' not in data:
         continue
