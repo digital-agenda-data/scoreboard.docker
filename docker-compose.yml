@@ -123,13 +123,14 @@ services:
 
 
   nginx:
-    build: ./docker/nginx/
+    image: digitalagendadata/nginx
     depends_on:
     - haproxy
     - piwik
     - solr
     restart: always
     volumes:
+    - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
     - ./nginx/globals.conf:/etc/nginx/conf.d/globals.conf:ro
     - ./nginx/project-${DEPLOY_TYPE}.conf:/etc/nginx/conf.d/project.conf:ro
     - piwik_files:/var/www/html
