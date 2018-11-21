@@ -21,7 +21,7 @@ services:
       SOLR_URL: "http://solr:8983/solr/scoreboard"
 
   haproxy:
-    image: eeacms/haproxy:1.8-1.1
+    image: eeacms/haproxy:1.8-1.3
     restart: always
     depends_on:
     - plone
@@ -117,6 +117,7 @@ services:
     - mariadb:db
     volumes:
     - piwik_files:/var/www/html
+    - ./piwik/www-${DEPLOY_TYPE}.conf:/usr/local/etc/php-fpm.d/www.conf
     environment:
        TZ: "${TZ}"
        MYSQL_ROOT_PASSWORD: ${MARIADB_PASSWORD}
