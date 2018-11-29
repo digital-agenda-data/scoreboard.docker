@@ -585,5 +585,7 @@ The docker image is based on the digitalagendadata/plone:latest image. To reduce
 If CSS does not look right on the Plone site:
 <SCOREBOARD_URL>/portal_css/manage_cssForm - Uncheck reset.css and click SAVE
 
+#### Configure PIWIK performance
+* If you find in piwik/matomo logs this message: `server reached pm.max_children setting` or you want to offer a better performace of the web application, you will need to update the `pm.max_children`, `pm.start_servers`, `pm.min_spare_servers` and `pm.max_spare_servers` values in the corresponding www-`DEPLOY_TYPE`.conf configuration file located in the `piwik/` directory and restart the container.
 
-## TODO: Fix PIWIK - configure geoip2 for nginx
+
