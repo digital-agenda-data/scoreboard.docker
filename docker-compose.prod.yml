@@ -7,18 +7,18 @@ services:
     # - the local port is also hardcoded in nginx/project-$DEPLOY_TYPE.conf
     # - elda will not work on any port other than 80
     # - TODO: CR login and logout actions ignore the port and redirect to port 80
-    - 127.0.0.1:82:80
+    - 127.0.0.1:81:80
 
   plone:
     build:
-      context: ./docker/plone/staging
-    image: digitalagendadata/plone.staging
+      context: ./docker/plone/
+    image: digitalagendadata/plone
     environment:
       SPARQL_DEBUG: "on"
 
   virtuoso:
     ports:
-      - 127.0.0.1:8892:8890
+      - 127.0.0.1:8891:8890
 
   elda:
     build:
