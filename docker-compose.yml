@@ -74,7 +74,7 @@ services:
       VIRT_Parameters_DirsAllowed: "., /backup, /export/download, /tmp, /usr/local/virtuoso-opensource/share/virtuoso/vad"
       VIRT_SPARQL_ResultSetMaxRows: 1000000
       VIRT_SPARQL_ResultSetMaxRows: 1000000
-      VIRT_SPARQL_MaxQueryCostEstimationTime: 5000
+      VIRT_SPARQL_MaxQueryCostEstimationTime: 50000
       VIRT_SPARQL_MaxQueryExecutionTime: 300
       VIRT_SPARQL_DefaultQuery: "PREFIX qb: <http://purl.org/linked-data/cube#>
         PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
@@ -111,7 +111,7 @@ services:
        MYSQL_PASSWORD: ${MARIADB_PIWIK_PASSWORD}
 
   piwik:
-    image: matomo:3.5-fpm
+    image: matomo:3.7-fpm
     restart: always
     links:
     - mariadb:db
