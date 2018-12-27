@@ -20,25 +20,25 @@ services:
     ports:
       - 127.0.0.1:8891:8890
 
-  elda:
-    build:
-      context: ./docker/elda
+#  elda:
+#    build:
+#      context: ./docker/elda
 
-  rsync-server:
-    image: eeacms/rsync:latest
-    container_name: rsync
-    restart: "no"
-    ports:
-      - 127.0.0.1:2222:22/tcp
-    command:
-      - server
-    environment:
-      - SSH_AUTH_KEY="ssh-rsa ..."
-      - TZ=Europe/Copenhagen
-    tty: true
-    stdin_open: true
-    volumes:
-    - virtuoso_db:/virtuoso-data
-    - maria_db:/var/lib/mysql
-    - cr_home:/var/local/cr/apphome
-    - zeodata:/plone-data
+#  rsync-server:
+#    image: eeacms/rsync:latest
+#    container_name: rsync
+#    restart: "no"
+#    ports:
+#      - 127.0.0.1:2222:22/tcp
+#    command:
+#      - server
+#    environment:
+#      - SSH_AUTH_KEY="ssh-rsa ..."
+#      - TZ=Europe/Copenhagen
+#    tty: true
+#    stdin_open: true
+#    volumes:
+#    - virtuoso_db:/virtuoso-data
+#    - maria_db:/var/lib/mysql
+#    - cr_home:/var/local/cr/apphome
+#    - zeodata:/plone-data

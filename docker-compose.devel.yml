@@ -50,13 +50,13 @@ services:
   piwik:
     restart: "no"
 
-  elda:
-    image: digitalagendadata/scoreboard.elda
-    restart: "no"
-    ports:
-      - 8081:8080
-    build:
-      context: ./docker/elda
+#  elda:
+#    image: digitalagendadata/scoreboard.elda
+#    restart: "no"
+#    ports:
+#      - 8081:8080
+#    build:
+#      context: ./docker/elda
 
   cron:
     restart: "no"
@@ -66,18 +66,21 @@ services:
   mail:
     restart: "no"
 
-  rsync-server:
-    image: eeacms/rsync:latest
-    restart: "no"
-    ports:
-      - 2222:22/tcp
-    command:
-      - server
-    environment:
-      - SSH_AUTH_KEY="ssh-rsa ..."
-      - TZ=Europe/Copenhagen
-    tty: true
-    stdin_open: true
-    volumes:
-    - virtuoso_db:/data
-    - maria_db:/var/lib/mysql
+#  rsync-server:
+#    image: eeacms/rsync:latest
+#    container_name: rsync
+#    restart: "no"
+#    ports:
+#      - 2222:22/tcp
+#    command:
+#      - server
+#    environment:
+#      - SSH_AUTH_KEY="ssh-rsa ..."
+#      - TZ=Europe/Copenhagen
+#    tty: true
+#    stdin_open: true
+#    volumes:
+#    - virtuoso_db:/data
+#    - maria_db:/var/lib/mysql
+#    - cr_home:/var/local/cr/apphome
+#    - zeodata:/plone-data
