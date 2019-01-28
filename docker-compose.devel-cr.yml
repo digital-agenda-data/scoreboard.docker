@@ -1,0 +1,53 @@
+version: "3"
+services:
+
+  memcached:
+    entrypoint: "/bin/true"
+    restart: "no"
+
+  nginx:
+    entrypoint: "/bin/true"
+    restart: "no"
+    # build: ./docker/nginx/
+
+  plone:
+    entrypoint: "/bin/true"
+    restart: "no"
+
+  haproxy:
+    entrypoint: "/bin/true"
+    restart: "no"
+
+  zeoserver:
+    entrypoint: "/bin/true"
+    restart: "no"
+
+  solr:
+    entrypoint: "/bin/true"
+    restart: "no"
+
+  virtuoso:
+    restart: "no"
+    ports:
+      - 8890:8890
+
+  cr:
+    restart: "no"
+    ports:
+      - 8080:8080
+
+  mariadb:
+    entrypoint: "/bin/true"
+    restart: "no"
+
+  piwik:
+    entrypoint: "/bin/true"
+    restart: "no"
+
+  cron:
+    entrypoint: "/bin/true"
+    restart: "no"
+
+  mail:
+    entrypoint: "/bin/true"
+    restart: "no"
