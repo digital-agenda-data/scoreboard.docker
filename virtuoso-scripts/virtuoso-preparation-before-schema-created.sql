@@ -71,4 +71,4 @@ grant execute on file_to_string_session to cr3user;
 -- Define CR's default inference rule set.
 -- -------------------------------------------------------------------------------------
 
-rdfs_rule_set ('CRInferenceRule', 'http://cr.eionet.europa.eu/ontologies/contreg.rdf');
+-- rdfs_rule_set ('CRInferenceRule', 'http://cr.eionet.europa.eu/ontologies/contreg.rdf');
