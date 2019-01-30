@@ -61,6 +61,7 @@ services:
        - virtuoso_backup:/backup
        - exported_datasets:/export/download
        - ./virtuoso-scripts:/virtuoso-scripts
+       - ./migration_packages:/var/local/cr/apphome/migration_packages
      environment:
       VIRT_Database_ErrorLogFile: "/logs/virtuoso.log"
       VIRT_HTTPServer_ServerPort: 8890
@@ -71,7 +72,7 @@ services:
       VIRT_Parameters_ServerPort: 1111
       VIRT_Parameters_NumberOfBuffers: 170000
       VIRT_Parameters_MaxDirtyBuffers: 130000
-      VIRT_Parameters_DirsAllowed: "., /backup, /export/download, /tmp, /usr/local/virtuoso-opensource/share/virtuoso/vad"
+      VIRT_Parameters_DirsAllowed: "., /backup, /export/download, /tmp, /usr/local/virtuoso-opensource/share/virtuoso/vad, /var/local/cr/apphome/migration_packages"
       VIRT_SPARQL_ResultSetMaxRows: 1000000
       VIRT_SPARQL_ResultSetMaxRows: 1000000
       VIRT_SPARQL_MaxQueryCostEstimationTime: 50000
@@ -88,7 +89,7 @@ services:
      volumes:
        - cr_home:/var/local/cr/apphome
        - cr_logs:/usr/local/tomcat/logs
-       - ./shared:/var/local/cr/shared
+       - ./migration_packages:/var/local/cr/apphome/migration_packages
      environment:
        TZ: "${TZ}"
        HOME_URL: "${SCOREBOARD_URL}/data"
@@ -99,7 +100,7 @@ services:
        DB_RO_USER: cr3rouser
        DB_RO_PASSWORD: ${CR_DB_RO_PASSWORD}
        SPARQL_ENDPOINT: ${SPARQL_ENDPOINT}
-       CR_INSTANCES: ${SPARQL_ENDPOINT}
+       CR_INSTANCES: ${CR_INSTANCES}
 
   mariadb:
     image: mariadb:10.2.14
