@@ -72,7 +72,7 @@ services:
       VIRT_Parameters_ServerPort: 1111
       VIRT_Parameters_NumberOfBuffers: 170000
       VIRT_Parameters_MaxDirtyBuffers: 130000
-      VIRT_Parameters_DirsAllowed: "., /backup, /export/download, /tmp, /usr/local/virtuoso-opensource/share/virtuoso/vad, /var/local/cr/apphome/migration_packages"
+      VIRT_Parameters_DirsAllowed: "., /backup, /export/download, /tmp, /usr/local/virtuoso-opensource/share/virtuoso/vad, /var/local/cr/apphome/migration_packages, /var/local/cr/apphome/migration_packages_prod, /var/local/cr/apphome/migration_packages_test"
       VIRT_SPARQL_ResultSetMaxRows: 1000000
       VIRT_SPARQL_ResultSetMaxRows: 1000000
       VIRT_SPARQL_MaxQueryCostEstimationTime: 50000

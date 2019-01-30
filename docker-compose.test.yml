@@ -19,6 +19,13 @@ services:
   virtuoso:
     ports:
       - 127.0.0.1:8892:8890
+    volumes:
+    - /var/local/dad-prod/migration_packages:/var/local/cr/apphome/migration_packages_prod
+
+  cr:
+    image: digitalagendadata/cr:latest
+    volumes:
+    - /var/local/dad-prod/migration_packages:/var/local/cr/apphome/migration_packages_prod
 
 #  elda:
 #    build:
