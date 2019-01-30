@@ -97,6 +97,7 @@ services:
        DB_PASSWORD: ${CR_DB_PASSWORD}
        DB_RO_USER: cr3rouser
        DB_RO_PASSWORD: ${CR_DB_RO_PASSWORD}
+       SPARQL_ENDPOINT: ${SPARQL_ENDPOINT}
 
   mariadb:
     image: mariadb:10.2.14
@@ -148,7 +149,7 @@ services:
 #    - "nginx:${SCOREBOARDBASE_URL}"
 #    environment:
 #    - TZ=${TZ}
-#    - ELDA_SPARQL_ENDPOINT=${ELDA_SPARQL_ENDPOINT}
+#    - SPARQL_ENDPOINT=${SPARQL_ENDPOINT}
 
   cron:
     image: digitalagendadata/scoreboard.cron:1.1

@@ -368,7 +368,7 @@ spec:viewerDistribution a api:Viewer
 spec:scoreboard-api a api:API
 	; rdfs:label "Scoreboard API -- "@en
   #The SPARQL endpoint
-	; api:sparqlEndpoint <ELDA_SPARQL_ENDPOINT>
+	; api:sparqlEndpoint <SPARQL_ENDPOINT>
   #<http://virtuoso.scoreboardtest.edw.ro/sparql>
  	; api:maxPageSize 50
   ; api:defaultPageSize 10
@@ -412,10 +412,10 @@ spec:scoreboard-api a api:API
         , [api:name "inactiveImageBase"; api:value "/lda-assets/images/grey/16x16"]
         , [api:name "_resourceRoot"; api:value "/lda-assets/"]
         , [api:name "webapp"; api:value "/elda"]
-        , [api:name "visibleSparqlForm"; api:value "ELDA_SPARQL_ENDPOINT"]
+        , [api:name "visibleSparqlForm"; api:value "SPARQL_ENDPOINT"]
   .
 
-<ELDA_SPARQL_ENDPOINT> elda:supportsNestedSelect true.
+<SPARQL_ENDPOINT> elda:supportsNestedSelect true.
 #Endpoint definition
 #List all datasets
 

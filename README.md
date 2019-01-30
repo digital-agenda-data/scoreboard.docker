@@ -30,7 +30,7 @@ Scoreboard docker setup
     * For TEST it is test.digital-agenda-data.eu
     * For DEV it is dev.digital-agenda-data.eu
     * Note: to change these URLs, you must also edit nginx/project-${DEPLOY_TYPE} config files (nginx server_name and Plone VirtualHostBase)
-3. ELDA_SPARQL_ENDPOINT - used by ELDA, is the way to access the SPARQL Virtuoso url both from the browser and the container.
+3. SPARQL_ENDPOINT - used by CR, is the way to access the SPARQL Virtuoso url both from the browser and the container.
 4. SCOREBOARD_URL - the main URL (the one that is accessed from the browser), used by Content Registry - example:
  https://digital-agenda-data.eu, or  http://test.digital-agenda-data.eu or http://dev.digital-agenda-data.eu:81
 
