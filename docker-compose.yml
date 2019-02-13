@@ -101,6 +101,7 @@ services:
        DB_RO_PASSWORD: ${CR_DB_RO_PASSWORD}
        SPARQL_ENDPOINT: ${SPARQL_ENDPOINT}
        CR_INSTANCES: ${CR_INSTANCES}
+       CR_TRACKING_JS_FILE: ${CR_TRACKING_JS_FILE}
 
   mariadb:
     image: mariadb:10.2.14
