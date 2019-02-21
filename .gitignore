@@ -6,3 +6,9 @@ cron/scripts/isql.script
 cron/ssh/id_rsa
 cron/ssh/id_rsa.pub
 data/
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/vcs.xml
+/.idea/workspace.xml
+/scoreboard.docker.iml
+/.idea/saveactions_settings.xml
