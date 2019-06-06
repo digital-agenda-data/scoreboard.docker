@@ -46,13 +46,12 @@ SELECT DISTINCT ?observation ?time_period ?ref_area ?indicator ?breakdown ?unit_
     dad-prop:time-period ?time_period_uri ;
     dad-prop:unit-measure ?unit_measure_uri .
     OPTIONAL {?observation sdmx-measure:obsValue ?value}
-    OPTIONAL {?observation dad-prop:flag ?flag_uri}
+    OPTIONAL {?observation dad-prop:flag ?flag}
     OPTIONAL {?observation dad-prop:note ?note}
     OPTIONAL {?breakdown_uri skos:notation ?breakdown}
     OPTIONAL {?indicator_uri skos:notation ?indicator}
     OPTIONAL {?ref_area_uri skos:notation ?ref_area}
     ?time_period_uri skos:notation ?time_period .
-    OPTIONAL {?flag_uri skos:notation ?flag}
     OPTIONAL {?unit_measure_uri skos:notation ?unit_measure}
 }
 """
