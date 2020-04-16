@@ -139,7 +139,6 @@ will become
 
 * <SCOREBOARDBASE_URL> host should be pointing to the server you are installing the stack in /etc/hosts
 * The configuration files from the repository are an example of a <SCOREBOARDBASE_URL> that is configured on a different port than 80
-* The **elda** container needs access to the external SPARQL link from inside the container. If you are using /etc/hosts, the url will need to be redirected to the NGINX server. That is why the NGINX exposed port must be added to NGINX configuration, in the server that has the /sparql location configured.
 * If you are changing the default URLs from the .env.DEV file, you also need to updated them accordingly in the NGINX configuration file - nginx/project-DEV.conf
 
 
@@ -327,7 +326,7 @@ Press **Reuse the existing tables »**
 ### Available URLs
 
 1. Plone - <SCOREBOARD_URL>
-2. Elda - always http://semantic.digital-agenda-data.eu/dataset (must be added in /etc/hosts for local development)
+2. Virtuoso faceted browser - always http://semantic.digital-agenda-data.eu/dataset (must be added in /etc/hosts for local development)
 3. Content Registry - <SCOREBOARD_URL>/data/
 4. Download - <SCOREBOARD_URL>/datasets/desi#download
 5. Sparql - <SCOREBOARD_URL>/sparql
