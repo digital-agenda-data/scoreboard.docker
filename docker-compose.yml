@@ -32,7 +32,7 @@ services:
       TZ: "${TZ}"
 
   zeoserver:
-    image: plone/plone:4.3.17
+    image: plone/plone:4.3.19
     restart: always
     command:
       - zeo
