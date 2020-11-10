@@ -1,4 +1,4 @@
-FROM plone:4.3.17
+FROM plone:4.3.19
 
 # needed for egg builds
 RUN apt-get update \
