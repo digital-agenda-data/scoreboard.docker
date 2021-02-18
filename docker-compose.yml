@@ -145,8 +145,6 @@ services:
     environment:
     - TZ=${TZ}
     - GEOIP_KEY=${GEOIP_KEY}
-    ports:
-    - 80:80
 
 
 #  elda:
