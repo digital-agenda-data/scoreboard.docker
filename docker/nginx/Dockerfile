@@ -1,4 +1,5 @@
-FROM nginx:1.15.2
+
+FROM nginx:1.19
 
 
 
@@ -35,7 +36,7 @@ RUN set -x \
 #        NGINX_OPTIONS=$(2>&1 nginx -V | grep 'configure arguments' | awk -F: '{print $2}') \
 RUN set -x \
   && git clone https://github.com/leev/ngx_http_geoip2_module \
-  && echo "deb-src http://nginx.org/packages/mainline/debian/ stretch nginx" >> /etc/apt/sources.list \
+  && echo "deb-src http://nginx.org/packages/mainline/debian/ buster nginx" >> /etc/apt/sources.list \
   && DEBIAN_FRONTEND=noninteractive apt-get update \
   && apt-get source nginx=${NGINX_VERSION} \
   && cd $(find . -type d -name "nginx-*" -maxdepth 1) \
@@ -48,16 +49,11 @@ RUN set -x \
     build-essential \
     dpkg-dev
 
-# Download Maxmind db version 2
-# This example uses the free version from https://dev.maxmind.com/geoip/geoip2/geolite2/
-#
-# We only use the country db, you can add the city db and others if you want them.
-RUN set -x && mkdir -p /usr/share/geoip \
-  && wget -O /tmp/country.tar.gz http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.tar.gz \
-  && tar xf /tmp/country.tar.gz -C /usr/share/geoip --strip 1 \
-  && wget -O /tmp/city.tar.gz http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.tar.gz \
-  && tar xf /tmp/city.tar.gz  -C /usr/share/geoip --strip 1 \
-  && ls -al /usr/share/geoip/
+ADD download_geoip.sh /docker-entrypoint.d/30_download_geoip.sh
+RUN chmod +x /docker-entrypoint.d/30_download_geoip.sh
+
+#ENTRYPOINT ["/download_geoip.sh"]
+#CMD [ "nginx", "-g", "daemon off;" ]
 
 VOLUME /usr/share/geoip
 

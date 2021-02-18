@@ -50,7 +50,7 @@ If you are restoring the database from another environment, please copy here the
 
 #### Other variables
 10. TZ - default Timezone for all containers - Europe/Copenhagen
-
+11. GEOIP_KEY - the license key for the geoip database, https://www.maxmind.com/en/geoip2-services-and-databases
 
 ### Editing the docker-compose.yml file - NGINX port
 
