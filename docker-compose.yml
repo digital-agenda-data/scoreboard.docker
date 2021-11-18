@@ -116,7 +116,7 @@ services:
        MYSQL_PASSWORD: ${MARIADB_PIWIK_PASSWORD}
 
   piwik:
-    image: matomo:3.7-fpm
+    image: matomo:4.5-fpm
     restart: always
     links:
     - mariadb:db
